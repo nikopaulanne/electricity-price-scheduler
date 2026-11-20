@@ -30,8 +30,11 @@ class ConfigFlowTests(IsolatedAsyncioTestCase):
         os.symlink(source_components, Path(self.config_dir.name) / "custom_components")
         self.hass = HomeAssistant(self.config_dir.name)
         await async_prepare_hass(self.hass)
+        self.nordpool_entity = er.async_get(self.hass).async_get_or_create(
+            "sensor", "nordpool", "test-source", suggested_object_id="test_nordpool"
+        ).entity_id
         self.hass.states.async_set(
-            "sensor.test_nordpool",
+            self.nordpool_entity,
             "1.2",
             {
                 "raw_today": [],
@@ -65,10 +68,27 @@ class ConfigFlowTests(IsolatedAsyncioTestCase):
             DOMAIN, context={"source": SOURCE_USER}
         )
         self.assertEqual(result["type"], FlowResultType.FORM)
-        self.assertEqual(result["step_id"], "user")
+        self.assertEqual(result["step_id"], "market_source")
         return await self.hass.config_entries.flow.async_configure(
-            result["flow_id"], user_input={"price_entity_id": "sensor.test_nordpool"}
+            result["flow_id"], user_input={
+                "scenario": "heating",
+                "price_source": f"community_nordpool:{self.nordpool_entity}",
+            }
         )
+
+    async def _choose_source(self, form, *, scenario="cheap_now", entity_id="sensor.test_nordpool"):
+        registry = er.async_get(self.hass)
+        if entity_id == "sensor.test_nordpool":
+            entity_id = self.nordpool_entity
+        else:
+            registry.async_get_or_create(
+                "sensor", "nordpool", entity_id.rsplit(".", 1)[-1],
+                suggested_object_id=entity_id.rsplit(".", 1)[-1],
+            )
+        return await self.hass.config_entries.flow.async_configure(form["flow_id"], {
+            "scenario": scenario,
+            "price_source": f"community_nordpool:{entity_id}",
+        })
 
     async def test_valid_setup_persists_source_and_compact_defaults(self):
         with self._patch_fetch() as mock_fetch, patch(
@@ -111,32 +131,28 @@ class ConfigFlowTests(IsolatedAsyncioTestCase):
         self.assertNotIn("profile_name", entry.options)
         mock_fetch.assert_awaited_once()
 
-    async def test_source_picker_filters_to_community_nordpool(self):
-        result = await self.hass.config_entries.flow.async_init(
-            DOMAIN, context={"source": SOURCE_USER}
-        )
-        price_key = next(
-            key for key in result["data_schema"].schema
-            if getattr(key, "schema", None) == "price_entity_id"
-        )
-        self.assertEqual(result["data_schema"].schema[price_key].config["domain"], ["sensor"])
-        self.assertEqual(result["data_schema"].schema[price_key].config["integration"], "nordpool")
-
-    async def test_sole_registered_community_source_is_preselected_but_editable(self):
+    async def test_source_picker_offers_registered_source_and_custom_sensor(self):
         registry = er.async_get(self.hass)
-        entry = registry.async_get_or_create(
-            "sensor", "nordpool", "registered-test", suggested_object_id="registered_nordpool"
+        registry.async_get_or_create(
+            "sensor", "nordpool", "test-source", suggested_object_id="test_nordpool"
         )
-        self.hass.states.async_set(entry.entity_id, "1.2")
         result = await self.hass.config_entries.flow.async_init(
             DOMAIN, context={"source": SOURCE_USER}
         )
-        price_key = next(
-            key for key in result["data_schema"].schema
-            if getattr(key, "schema", None) == "price_entity_id"
+        source_key = next(key for key in result["data_schema"].schema if str(key) == "price_source")
+        options = result["data_schema"].schema[source_key].config["options"]
+        values = {item["value"] for item in options}
+        self.assertIn("community_nordpool:sensor.test_nordpool", values)
+        self.assertIn("custom_price_sensor", values)
+
+    async def test_sole_registered_community_source_is_preselected_but_custom_remains_available(self):
+        result = await self.hass.config_entries.flow.async_init(
+            DOMAIN, context={"source": SOURCE_USER}
         )
-        self.assertEqual(price_key.default(), entry.entity_id)
-        self.assertEqual(result["data_schema"].schema[price_key].config["integration"], "nordpool")
+        source = next(key for key in result["data_schema"].schema if str(key) == "price_source")
+        self.assertEqual(source.default(), f"community_nordpool:{self.nordpool_entity}")
+        values = {item["value"] for item in result["data_schema"].schema[source].config["options"]}
+        self.assertIn("custom_price_sensor", values)
 
     async def test_multiple_registered_community_sources_are_not_guessed(self):
         registry = er.async_get(self.hass)
@@ -146,18 +162,21 @@ class ConfigFlowTests(IsolatedAsyncioTestCase):
         second = registry.async_get_or_create(
             "sensor", "nordpool", "registered-test-2", suggested_object_id="second_nordpool"
         )
-        self.hass.states.async_set(first.entity_id, "1.2")
-        self.hass.states.async_set(second.entity_id, "1.5")
+        self.hass.states.async_set(first.entity_id, "1.2", {
+            "raw_today": [], "currency": "EUR",
+        })
+        self.hass.states.async_set(second.entity_id, "1.5", {
+            "raw_today": [], "currency": "EUR",
+        })
         result = await self.hass.config_entries.flow.async_init(
             DOMAIN, context={"source": SOURCE_USER}
         )
-        price_key = next(
-            key for key in result["data_schema"].schema
-            if getattr(key, "schema", None) == "price_entity_id"
-        )
-        self.assertEqual(price_key.default, vol.UNDEFINED)
+        price_key = next(key for key in result["data_schema"].schema if str(key) == "price_source")
+        default = price_key.default() if callable(price_key.default) else price_key.default
+        self.assertIs(default, vol.UNDEFINED)
 
     async def test_market_sources_include_only_eligible_entities(self):
+        er.async_get(self.hass).async_remove(self.nordpool_entity)
         registry = er.async_get(self.hass)
         entsoe = registry.async_get_or_create(
             "sensor", "entsoe", "average", suggested_object_id="de_average_price"
@@ -181,7 +200,7 @@ class ConfigFlowTests(IsolatedAsyncioTestCase):
             self.assertEqual(source.default(), selected)
             self.assertEqual(
                 [item["value"] for item in result["data_schema"].schema[source].config["options"]],
-                [selected],
+                [selected, "custom_price_sensor"],
             )
             result = await self.hass.config_entries.flow.async_configure(
                 result["flow_id"], {"scenario": "cheap_now", "price_source": selected}
@@ -232,6 +251,7 @@ class ConfigFlowTests(IsolatedAsyncioTestCase):
             self.assertEqual(entry.options["min_price_diff_per_kwh"], 0.05)
 
     async def test_amber_source_defaults_to_cheap_now_and_rejects_other_scenarios(self):
+        er.async_get(self.hass).async_remove(self.nordpool_entity)
         async def price_action(_call):
             return {"forecasts": []}
 
@@ -289,9 +309,7 @@ class ConfigFlowTests(IsolatedAsyncioTestCase):
                     DOMAIN, context={"source": SOURCE_USER}
                 )
                 flow_id = form["flow_id"]
-                setup = await self.hass.config_entries.flow.async_configure(
-                    flow_id, {"scenario": "cheap_now", "price_entity_id": "sensor.test_nordpool"}
-                )
+                setup = await self._choose_source(form, scenario="cheap_now")
                 profile_key = next(
                     key for key in setup["data_schema"].schema if str(key) == "profile_name"
                 )
@@ -322,10 +340,7 @@ class ConfigFlowTests(IsolatedAsyncioTestCase):
             new=AsyncMock(return_value=self.snapshot),
         ):
             start = await self.hass.config_entries.flow.async_init(DOMAIN, context={"source": SOURCE_USER})
-            setup = await self.hass.config_entries.flow.async_configure(
-                start["flow_id"],
-                user_input={"price_entity_id": "sensor.test_nordpool", "scenario": "cheap_now"},
-            )
+            setup = await self._choose_source(start, scenario="cheap_now")
             self.assertEqual(setup["step_id"], "price_setup")
             self.assertEqual({str(key) for key in setup["data_schema"].schema}, {
                 "profile_name", "threshold_price_per_kwh",
@@ -371,11 +386,7 @@ class ConfigFlowTests(IsolatedAsyncioTestCase):
             start = await self.hass.config_entries.flow.async_init(
                 DOMAIN, context={"source": SOURCE_USER}
             )
-            await self.hass.config_entries.flow.async_configure(
-                start["flow_id"], user_input={
-                    "price_entity_id": "sensor.test_nordpool", "scenario": "cheap_now",
-                },
-            )
+            await self._choose_source(start, scenario="cheap_now")
             preview = await self.hass.config_entries.flow.async_configure(
                 start["flow_id"], user_input={
                     "profile_name": "Cheap", "threshold_price_per_kwh": 0.05,
@@ -395,9 +406,7 @@ class ConfigFlowTests(IsolatedAsyncioTestCase):
             start = await self.hass.config_entries.flow.async_init(
                 DOMAIN, context={"source": SOURCE_USER},
             )
-            await self.hass.config_entries.flow.async_configure(
-                start["flow_id"], {"price_entity_id": "sensor.test_nordpool", "scenario": "cheap_now"},
-            )
+            await self._choose_source(start, scenario="cheap_now")
             preview = await self.hass.config_entries.flow.async_configure(
                 start["flow_id"], {"profile_name": "Cheap", "threshold_price_per_kwh": 0.05},
             )
@@ -412,27 +421,34 @@ class ConfigFlowTests(IsolatedAsyncioTestCase):
         self.assertTrue(_temperature_is_valid(self.hass, "sensor.outdoor_kelvin"))
 
     async def test_missing_unit_metadata_requests_explicit_override(self):
+        no_unit_entity = er.async_get(self.hass).async_get_or_create(
+            "sensor", "template", "no-unit", suggested_object_id="no_unit"
+        )
         self.hass.states.async_set(
-            "sensor.no_unit",
+            no_unit_entity.entity_id,
             "1.2",
             {"raw_today": [], "currency": "EUR"},
         )
-        with patch(
-            "custom_components.electricity_price_scheduler.config_flow.async_fetch_snapshot",
-            new=AsyncMock(side_effect=ProviderDataError("missing supported unit attribute")),
-        ):
-            result = await self.hass.config_entries.flow.async_init(
-                DOMAIN, context={"source": SOURCE_USER}
-            )
-            form = await self.hass.config_entries.flow.async_configure(
-                result["flow_id"], user_input={"price_entity_id": "sensor.no_unit"}
-            )
+        result = await self.hass.config_entries.flow.async_init(
+            DOMAIN, context={"source": SOURCE_USER}
+        )
+        form = await self.hass.config_entries.flow.async_configure(result["flow_id"], {
+            "scenario": "heating",
+            "price_source": "custom_price_sensor",
+        })
+        form = await self.hass.config_entries.flow.async_configure(form["flow_id"], {
+            "price_entity_id": no_unit_entity.entity_id,
+        })
         self.assertEqual(form["type"], FlowResultType.FORM)
         self.assertEqual(form["errors"]["unit_override"], "unit_override_required")
+        self.assertIn("unit_override", {str(key) for key in form["data_schema"].schema})
 
     async def test_missing_currency_requires_user_selection(self):
+        no_currency_entity = er.async_get(self.hass).async_get_or_create(
+            "sensor", "template", "no-currency", suggested_object_id="no_currency"
+        )
         self.hass.states.async_set(
-            "sensor.no_currency",
+            no_currency_entity.entity_id,
             "1.2",
             {"raw_today": [], "unit": "kWh", "price_in_cents": False},
         )
@@ -443,17 +459,27 @@ class ConfigFlowTests(IsolatedAsyncioTestCase):
             result = await self.hass.config_entries.flow.async_init(
                 DOMAIN, context={"source": SOURCE_USER}
             )
-            form = await self.hass.config_entries.flow.async_configure(
-                result["flow_id"], user_input={"price_entity_id": "sensor.no_currency"}
-            )
+            form = await self.hass.config_entries.flow.async_configure(result["flow_id"], {
+                "scenario": "heating",
+                "price_source": "custom_price_sensor",
+            })
+            form = await self.hass.config_entries.flow.async_configure(form["flow_id"], {
+                "price_entity_id": no_currency_entity.entity_id,
+            })
             self.assertEqual(form["type"], FlowResultType.FORM)
             self.assertEqual(form["errors"]["currency"], "currency_required")
             form = await self.hass.config_entries.flow.async_configure(
                 form["flow_id"],
                 user_input={
-                    "price_entity_id": "sensor.no_currency",
+                    "scenario": "heating",
+                    "price_source": "custom_price_sensor",
+                    "price_entity_id": no_currency_entity.entity_id,
                     "currency": "NOK",
                 },
+            )
+            self.assertEqual(form["step_id"], "custom_price_preview")
+            form = await self.hass.config_entries.flow.async_configure(
+                form["flow_id"], {"continue": True},
             )
         self.assertEqual(form["step_id"], "settings")
         self.assertEqual(form["description_placeholders"]["currency"], "NOK")
@@ -462,7 +488,7 @@ class ConfigFlowTests(IsolatedAsyncioTestCase):
             key for key in form["data_schema"].schema if getattr(key, "schema", None) == "min_price_diff_per_kwh"
         )
         self.assertFalse(hasattr(required, "default") and required.default != vol.UNDEFINED)
-        mock_fetch.assert_awaited_once()
+        self.assertGreaterEqual(mock_fetch.await_count, 1)
 
     async def test_options_flow_uses_readonly_current_entry_property(self):
         with self._patch_fetch() as _mock_fetch, patch(
@@ -580,8 +606,11 @@ class ConfigFlowTests(IsolatedAsyncioTestCase):
         self.assertEqual(result["errors"]["temperature_entity_id"], "temperature_sensor_required")
 
     async def test_reconfigure_currency_change_requires_and_saves_new_threshold(self):
+        nok_entity = er.async_get(self.hass).async_get_or_create(
+            "sensor", "nordpool", "nok-source", suggested_object_id="test_nordpool_nok"
+        )
         self.hass.states.async_set(
-            "sensor.test_nordpool_nok",
+            nok_entity.entity_id,
             "1.2",
             {
                 "raw_today": [],
@@ -611,14 +640,14 @@ class ConfigFlowTests(IsolatedAsyncioTestCase):
             )
             form = await self.hass.config_entries.flow.async_configure(
                 flow["flow_id"],
-                user_input={"price_entity_id": "sensor.test_nordpool_nok"},
+                user_input={"price_source": f"community_nordpool:{nok_entity.entity_id}"},
             )
             self.assertEqual(form["type"], FlowResultType.FORM)
             self.assertEqual(form["errors"]["min_price_diff_per_kwh"], "currency_changed_threshold_required")
             result = await self.hass.config_entries.flow.async_configure(
                 form["flow_id"],
                 user_input={
-                    "price_entity_id": "sensor.test_nordpool_nok",
+                    "price_source": f"community_nordpool:{nok_entity.entity_id}",
                     "min_price_diff_per_kwh": 3.0,
                 },
             )

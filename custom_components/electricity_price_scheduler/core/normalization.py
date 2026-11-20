@@ -146,16 +146,16 @@ def _unit_factor(source_unit: str, currency: str) -> float:
             raise PriceDataError("øre/MWh is only supported with NOK currency")
         return 0.00001
 
-    for code in ("EUR", "NOK", "SEK", "DKK", "GBP", "PLN"):
-        if curr != code and unit.startswith(code.lower() + "/"):
+    code, _, energy = unit.partition("/")
+    if len(code) == 3 and code.isascii() and code.isalpha():
+        if code.upper() != curr:
             raise PriceDataError(f"source unit {source_unit!r} conflicts with currency {curr}")
-        if curr == code:
-            if unit == f"{code.lower()}/kwh":
-                return 1.0
-            if unit == f"{code.lower()}/mwh":
-                return 0.001
-            if unit == f"{code.lower()}/wh":
-                return 1000.0
+        if energy == "kwh":
+            return 1.0
+        if energy == "mwh":
+            return 0.001
+        if energy == "wh":
+            return 1000.0
     raise PriceDataError(f"unsupported source unit: {source_unit!r}")
 
 

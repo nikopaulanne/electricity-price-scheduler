@@ -146,13 +146,17 @@
       },
       "market_source": {
         "title": "Szenario und Preisquelle auswählen",
-        "description": "Wählen Sie, wofür Sie den Strompreis verwenden möchten. Wenn nur eine Strompreisquelle verfügbar ist, ist sie vorausgewählt. Prüfen Sie vor dem Festlegen einer Preisgrenze, ob die Preise Steuern und Gebühren enthalten.",
+        "description": "Wähle, was du optimieren möchtest. Wenn eine Preisquelle erkannt wird, ist sie vorausgewählt. Wähle **Eigener Preissensor**, um eine kompatible Preisreihe von einem Template- oder Proxy-Sensor zu verwenden. Prüfe vor dem Festlegen einer Preisgrenze, ob Steuern und Gebühren enthalten sind.",
         "data": {
           "scenario": "Wofür möchten Sie den Strompreis verwenden?",
           "currency": "Währung",
           "unit_override": "Preiseinheit des Sensors",
           "price_source": "Preisquelle",
-          "home_name": "Name des Tibber-Haushalts"
+          "home_name": "Name des Tibber-Haushalts",
+          "price_entity_id": "Preissensor"
+        },
+        "data_description": {
+          "price_entity_id": "Wähle einen Sensor mit den heutigen Preisen in raw_today und, falls verfügbar, den morgigen Preisen in raw_tomorrow. Jedes Preisintervall braucht eine Startzeit, eine Endzeit und einen Preis."
         }
       },
       "market_reconfigure": {
@@ -165,13 +169,24 @@
           "threshold_price_per_kwh": "Preisgrenze für günstigen Strom",
           "price_ceiling_per_kwh": "Höchstpreis",
           "price_source": "Preisquelle",
-          "home_name": "Name des Tibber-Haushalts"
+          "home_name": "Name des Tibber-Haushalts",
+          "price_entity_id": "Preissensor"
+        },
+        "data_description": {
+          "price_entity_id": "Wähle einen Sensor mit den heutigen Preisen in raw_today und, falls verfügbar, den morgigen Preisen in raw_tomorrow. Jedes Preisintervall braucht eine Startzeit, eine Endzeit und einen Preis."
+        }
+      },
+      "custom_price_preview": {
+        "title": "Preissensor prüfen",
+        "description": "Aktueller Preis: {current_price} {currency}/kWh. Preisintervalle für die Planung: {slot_count}. Das letzte veröffentlichte Intervall endet am {coverage_end} (Ortszeit in Home Assistant).",
+        "data": {
+          "continue": "Diesen Preissensor verwenden"
         }
       }
     },
     "error": {
       "base": "Die ausgewählte Quelle oder die Einstellungen konnten nicht geprüft werden.",
-      "price_entity_id": "Wählen Sie einen verfügbaren Nordpool-Sensor.",
+      "price_entity_id": "Wähle einen verfügbaren Preissensor.",
       "currency": "Wählen Sie die Währung dieses Sensors.",
       "unit_override": "Wählen Sie die Preiseinheit des Sensors.",
       "min_price_diff_per_kwh": "Geben Sie einen neuen Grenzwert ein, da sich die Währung der Quelle geändert hat.",
@@ -199,7 +214,8 @@
       "currency_change_with_price_helper": "Leeren Sie in den Profileinstellungen das Feld für den Helfer für den Mindestpreisunterschied, bevor Sie die Währung wechseln.",
       "tibber_home_required": "Es gibt mehrere aktive Tibber-Haushalte. Geben Sie den Namen des Haushalts so ein, wie er in Tibber angezeigt wird.",
       "tibber_home_not_found": "Prüfen Sie den Namen des Tibber-Haushalts einschließlich der Schreibweise.",
-      "threshold_only_source": "Amber Electric funktioniert nur mit „Jetzt günstig“. Wählen Sie „Jetzt günstig“ oder eine andere Preisquelle."
+      "threshold_only_source": "Amber Electric funktioniert nur mit „Jetzt günstig“. Wählen Sie „Jetzt günstig“ oder eine andere Preisquelle.",
+      "custom_price_coverage_expired": "Alle Preisintervalle dieses Sensors sind abgelaufen. Prüfe, ob die Quelle neue Preise bereitstellt."
     },
     "abort": {
       "reconfigure_successful": "Die Preisquelle wurde aktualisiert.",
@@ -310,6 +326,11 @@
         "fri": "Freitag",
         "sat": "Samstag",
         "sun": "Sonntag"
+      }
+    },
+    "custom_price_source": {
+      "options": {
+        "custom_price_sensor": "Eigener Preissensor"
       }
     }
   },

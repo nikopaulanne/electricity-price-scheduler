@@ -146,13 +146,17 @@
       },
       "market_source": {
         "title": "Välj scenario och priskälla",
-        "description": "Välj vad du vill använda elpriset till. Om det bara finns en tillgänglig priskälla är den förvald. Kontrollera om priserna inkluderar skatter och avgifter innan du anger en prisgräns.",
+        "description": "Välj vad du vill optimera. Om en priskälla upptäcks är den förvald. Välj **Egen prissensor** för att använda en kompatibel prisserie från en mallsensor eller proxysensor. Kontrollera om priserna inkluderar skatter och avgifter innan du anger en prisgräns.",
         "data": {
           "scenario": "Vad vill du använda elpriset till?",
           "currency": "Valuta",
           "unit_override": "Prisenhet som sensorn använder",
           "price_source": "Priskälla",
-          "home_name": "Namn på Tibber-hem"
+          "home_name": "Namn på Tibber-hem",
+          "price_entity_id": "Prissensor"
+        },
+        "data_description": {
+          "price_entity_id": "Välj en sensor med dagens priser i raw_today och morgondagens priser i raw_tomorrow när de finns. Varje prisintervall behöver en starttid, en sluttid och ett pris."
         }
       },
       "market_reconfigure": {
@@ -165,13 +169,24 @@
           "threshold_price_per_kwh": "Prisgräns för lågt pris",
           "price_ceiling_per_kwh": "Högsta pris",
           "price_source": "Priskälla",
-          "home_name": "Namn på Tibber-hem"
+          "home_name": "Namn på Tibber-hem",
+          "price_entity_id": "Prissensor"
+        },
+        "data_description": {
+          "price_entity_id": "Välj en sensor med dagens priser i raw_today och morgondagens priser i raw_tomorrow när de finns. Varje prisintervall behöver en starttid, en sluttid och ett pris."
+        }
+      },
+      "custom_price_preview": {
+        "title": "Granska prissensorn",
+        "description": "Aktuellt pris: {current_price} {currency}/kWh. Tillgängliga intervall för schemaläggning: {slot_count}. Det sista publicerade intervallet slutar {coverage_end} (lokal tid i Home Assistant).",
+        "data": {
+          "continue": "Använd den här prissensorn"
         }
       }
     },
     "error": {
       "base": "Det gick inte att validera den valda källan eller inställningarna.",
-      "price_entity_id": "Välj en tillgänglig Nordpool-sensor.",
+      "price_entity_id": "Välj en tillgänglig prissensor.",
       "currency": "Välj valutan som den här sensorn använder.",
       "unit_override": "Välj prisenheten som sensorn använder.",
       "min_price_diff_per_kwh": "Ange en ny gräns eftersom priskällans valuta har ändrats.",
@@ -199,7 +214,8 @@
       "currency_change_with_price_helper": "Töm fältet för hjälparen för minsta prisskillnad i profilens inställningar innan du byter valuta.",
       "tibber_home_required": "Det finns mer än ett aktivt Tibber-hem. Ange hemmets namn så som det visas i Tibber.",
       "tibber_home_not_found": "Kontrollera namnet på Tibber-hemmet, inklusive stavningen.",
-      "threshold_only_source": "Amber Electric fungerar bara med Lågt pris nu. Välj Lågt pris nu eller en annan priskälla."
+      "threshold_only_source": "Amber Electric fungerar bara med Lågt pris nu. Välj Lågt pris nu eller en annan priskälla.",
+      "custom_price_coverage_expired": "Alla prisintervall från den här sensorn har löpt ut. Kontrollera om källan har nya priser."
     },
     "abort": {
       "reconfigure_successful": "Priskällan har uppdaterats.",
@@ -310,6 +326,11 @@
         "fri": "Fredag",
         "sat": "Lördag",
         "sun": "Söndag"
+      }
+    },
+    "custom_price_source": {
+      "options": {
+        "custom_price_sensor": "Egen prissensor"
       }
     }
   },

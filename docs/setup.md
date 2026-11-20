@@ -8,6 +8,8 @@ Use Home Assistant 2026.11.0 or later. Marketplace installation requires v3 or l
 
 Set up one [supported electricity price source](configuration.md#profile-and-price-source) in your Home Assistant instance. Check that it has a current price for your area. If you already use the community Nord Pool integration, you can start with its existing price sensor. Choose English under **User profile → Localization → Language** to match the labels below.
 
+If your setup uses a proxy or template sensor, you can select **My price sensor** and use its Nordpool-compatible `raw_today` price series. Check the sensor's currency, unit, taxes, and available time range before saving the profile. See [price-source requirements and outage behavior](configuration.md#use-your-own-price-sensor).
+
 ## Marketplace installation
 
 1. Select [Open Electricity Price Scheduler in Marketplace](https://my.home-assistant.io/redirect/marketplace_repository/?owner=nikopaulanne&repository=electricity-price-scheduler&category=integration). Confirm the address of your Home Assistant instance if asked.
@@ -23,12 +25,9 @@ See [Home Assistant’s Marketplace guide](https://www.home-assistant.io/integra
 
 1. If setup is already open, continue there. Otherwise open **Settings → Devices & services → Helpers → Create helper** and choose **Electricity Price Scheduler**.
 2. Choose **Cheap now** and select your price source. If Home Assistant has one available source, the form preselects it. Check that it is the sensor or market area you use, then select **Submit**.
-3. Enter a **Cheap price limit** in the currency and unit shown. Enter `0.05` for 5 euro cents per kWh when the form shows EUR/kWh. Select **Submit**, review the preview, and select **Submit** again with **Back to settings** off. Select **Skip and finish** if Home Assistant offers to assign the device to an area.
-4. Go to **Settings → Devices & services → Integrations → Electricity Price Scheduler** and open the profile's device (for example, **Cheap electricity**). Check **Current price**, **Schedule status**, and **Use electricity now**. With valid prices and no time restrictions, the signal is **On** at or below the limit and **Off** above it. If the status is **Price source unavailable** or **Invalid price data**, see [Unknown or unavailable values](troubleshooting.md#unknown-or-unavailable-values).
-
-![English setup with a single Nordpool source already selected](images/setup-source-en.png)
-
-![English preview showing the next time the price meets the limit](images/price-preview-en.png)
+3. Enter a **Cheap price limit** in the unit shown and select **Submit**. For example, enter `0.05` for 5 euro cents per kWh when the form shows EUR/kWh.
+4. In **Review your profile**, check whether **Use electricity now** would be on. If the signal is off and a later interval meets your limit, the preview shows when that interval begins in Home Assistant's local time. If you want to change the limit, turn on **Back to settings** and select **Submit**. To save, leave **Back to settings** off and select **Submit**. Select **Skip and finish** if Home Assistant offers to assign the device to an area.
+5. Go to **Settings → Devices & services → Integrations → Electricity Price Scheduler** and open the profile's device (for example, **Cheap electricity**). Check **Current price**, **Schedule status**, and **Use electricity now**. With valid prices and no time restrictions, the signal is **On** at or below the limit and **Off** above it. If the status is **Price source unavailable** or **Invalid price data**, see [Unknown or unavailable values](troubleshooting.md#unknown-or-unavailable-values).
 
 ## Choose what to schedule next
 

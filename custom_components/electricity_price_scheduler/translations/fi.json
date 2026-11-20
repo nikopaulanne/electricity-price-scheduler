@@ -146,13 +146,17 @@
       },
       "market_source": {
         "title": "Valitse skenaario ja hintalähde",
-        "description": "Valitse, mihin käytät hintatietoa. Jos käytettävissä on vain yksi sähkön hintalähde, se on valittu valmiiksi. Tarkista ennen hintarajan asettamista, sisältävätkö hinnat verot ja maksut.",
+        "description": "Valitse, mihin käytät hintatietoa. Jos integraatio tunnistaa vain yhden hintalähteen, se on valittu valmiiksi. Valitse **Oma hintasensori**, jos käytät yhteensopivaa hintasarjaa template- tai proxy-sensorista. Tarkista ennen hintarajan asettamista, sisältävätkö hinnat verot ja maksut.",
         "data": {
           "scenario": "Mihin haluat käyttää hintatietoa?",
           "currency": "Valuutta",
           "unit_override": "Anturin käyttämä hinnan yksikkö",
           "price_source": "Hintalähde",
-          "home_name": "Tibber-kodin nimi"
+          "home_name": "Tibber-kodin nimi",
+          "price_entity_id": "Hinta-anturi"
+        },
+        "data_description": {
+          "price_entity_id": "Valitse sensori, jonka raw_today-attribuutissa on päivän hinnat ja jonka raw_tomorrow-attribuutissa on huomisen hinnat, jos ne ovat saatavilla. Jokaisella hintajaksolla on oltava alku- ja loppuaika sekä hinta."
         }
       },
       "market_reconfigure": {
@@ -165,13 +169,24 @@
           "threshold_price_per_kwh": "Halvan hinnan raja",
           "price_ceiling_per_kwh": "Enimmäishinta",
           "price_source": "Hintalähde",
-          "home_name": "Tibber-kodin nimi"
+          "home_name": "Tibber-kodin nimi",
+          "price_entity_id": "Hinta-anturi"
+        },
+        "data_description": {
+          "price_entity_id": "Valitse sensori, jonka raw_today-attribuutissa on päivän hinnat ja jonka raw_tomorrow-attribuutissa on huomisen hinnat, jos ne ovat saatavilla. Jokaisella hintajaksolla on oltava alku- ja loppuaika sekä hinta."
+        }
+      },
+      "custom_price_preview": {
+        "title": "Tarkista hintasensori",
+        "description": "Nykyinen hinta: {current_price} {currency}/kWh. Ajoitukseen käytettävissä olevat hintajaksot: {slot_count}. Viimeinen julkaistu jakso päättyy {coverage_end} (Home Assistantin paikallinen aika).",
+        "data": {
+          "continue": "Käytä tätä hintasensoria"
         }
       }
     },
     "error": {
       "base": "Valittua lähdettä tai asetuksia ei voitu tarkistaa.",
-      "price_entity_id": "Valitse käytettävissä oleva Nordpool-anturi.",
+      "price_entity_id": "Valitse käytettävissä oleva hintasensori.",
       "currency": "Valitse anturin käyttämä valuutta.",
       "unit_override": "Valitse anturin käyttämä hinnan yksikkö.",
       "min_price_diff_per_kwh": "Anna uusi kynnysarvo, koska lähteen valuutta vaihtui.",
@@ -199,7 +214,8 @@
       "currency_change_with_price_helper": "Tyhjennä profiilin asetuksissa Vähimmäishintaeron apuri -kenttä ennen valuutan vaihtamista.",
       "tibber_home_required": "Tibberissä on useita aktiivisia koteja. Kirjoita kodin nimi kuten se näkyy Tibberissä.",
       "tibber_home_not_found": "Tarkista Tibber-kodin nimi ja kirjoitusasu.",
-      "threshold_only_source": "Amber Electric toimii vain Halpa nyt -skenaariossa. Valitse Halpa nyt tai toinen hintalähde."
+      "threshold_only_source": "Amber Electric toimii vain Halpa nyt -skenaariossa. Valitse Halpa nyt tai toinen hintalähde.",
+      "custom_price_coverage_expired": "Kaikki tämän sensorin hintajaksot ovat vanhentuneet. Tarkista, onko lähteessä uusia hintoja."
     },
     "abort": {
       "reconfigure_successful": "Hintalähde päivitettiin.",
@@ -310,6 +326,11 @@
         "fri": "Perjantai",
         "sat": "Lauantai",
         "sun": "Sunnuntai"
+      }
+    },
+    "custom_price_source": {
+      "options": {
+        "custom_price_sensor": "Oma hintasensori"
       }
     }
   },

@@ -11,6 +11,7 @@ from unittest.mock import AsyncMock, MagicMock, patch
 from homeassistant.config_entries import SOURCE_USER
 from homeassistant.core import HomeAssistant
 from homeassistant.data_entry_flow import FlowResultType
+from homeassistant.helpers import entity_registry as er
 from ha_test_helpers import async_prepare_hass
 
 from custom_components.electricity_price_scheduler import (
@@ -37,8 +38,11 @@ class EntryLifecycleTests(IsolatedAsyncioTestCase):
         os.symlink(components, Path(self.config_dir.name) / "custom_components")
         self.hass = HomeAssistant(self.config_dir.name)
         await async_prepare_hass(self.hass)
+        self.price_entity = er.async_get(self.hass).async_get_or_create(
+            "sensor", "nordpool", "test_nordpool", suggested_object_id="test_nordpool",
+        )
         self.hass.states.async_set(
-            "sensor.test_nordpool",
+            self.price_entity.entity_id,
             "1.2",
             {
                 "raw_today": [],
@@ -66,7 +70,10 @@ class EntryLifecycleTests(IsolatedAsyncioTestCase):
                 DOMAIN, context={"source": SOURCE_USER}
             )
             result = await self.hass.config_entries.flow.async_configure(
-                result["flow_id"], user_input={"price_entity_id": "sensor.test_nordpool"}
+                result["flow_id"], user_input={
+                    "scenario": "heating",
+                    "price_source": f"community_nordpool:{self.price_entity.entity_id}",
+                }
             )
             result = await self.hass.config_entries.flow.async_configure(
                 result["flow_id"],
@@ -107,6 +114,39 @@ class EntryLifecycleTests(IsolatedAsyncioTestCase):
         await self.hass.async_block_till_done()
         self.assertIs(self.hass.data[DOMAIN][DATA_OPTIMIZER_SEMAPHORE], first_gate)
         self.assertIn(entry.entry_id, self.hass.data[DOMAIN][DATA_ENTRIES])
+
+    async def test_custom_source_expires_at_last_price_boundary(self):
+        entry = await self._entry()
+        coordinator = self.hass.data[DOMAIN][DATA_ENTRIES][entry.entry_id]
+        now = datetime.now(timezone.utc).replace(second=0, microsecond=0)
+        coverage_end = now + timedelta(minutes=15)
+        prices = PriceSnapshot(
+            (PriceSlot(now, coverage_end, 0.1),),
+            "EUR",
+            "custom_price_sensor",
+            coverage_start=now,
+            coverage_end=coverage_end,
+        )
+        with (
+            patch(
+                "custom_components.electricity_price_scheduler.coordinator.async_fetch_snapshot",
+                new=AsyncMock(return_value=prices),
+            ),
+            patch(
+                "custom_components.electricity_price_scheduler.coordinator.async_track_point_in_time",
+            ) as schedule,
+            patch("homeassistant.util.dt.utcnow", return_value=now) as clock,
+        ):
+            await coordinator.async_refresh()
+            self.assertTrue(coordinator.data.available)
+            self.assertEqual(schedule.call_args.args[2], coverage_end)
+
+            clock.return_value = coverage_end
+            await coordinator._async_handle_transition(coverage_end)
+
+        self.assertFalse(coordinator.data.available)
+        self.assertEqual(coordinator.data.status.value, "source_unavailable")
+        self.assertIsNone(coordinator.data.phase)
 
     async def test_active_window_survives_reload_only_with_remaining_source_coverage(self):
         entry = await self._entry()
