@@ -1,0 +1,71 @@
+name: Validate
+
+on:
+  push:
+  pull_request:
+  schedule:
+    - cron: "17 4 * * 1"
+  workflow_dispatch:
+
+permissions: {}
+
+jobs:
+  unit-tests:
+    name: Core and provider tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.14"
+      - run: python -m unittest discover -s tests/core -v
+      - run: python -m unittest discover -s tests/providers -v
+
+  ha-runtime-tests:
+    name: Tests in Home Assistant runtime
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run HA-specific root tests with the pinned HA Python runtime
+        run: >-
+          docker run --rm
+          --volume "${{ github.workspace }}:/repo:ro"
+          --workdir /repo
+          --env PYTHONDONTWRITEBYTECODE=1
+          --entrypoint python
+          ghcr.io/home-assistant/home-assistant:2026.11.0@sha256:c6c1ca9931036bf3a2c4cc088d8db25dfea3b33935a5ecc83c40349462e2f69e
+          -m unittest discover -s tests -p 'test_*.py' -v
+      - name: Run core tests with the pinned HA Python runtime
+        run: >-
+          docker run --rm
+          --volume "${{ github.workspace }}:/repo:ro"
+          --workdir /repo
+          --env PYTHONDONTWRITEBYTECODE=1
+          --entrypoint python
+          ghcr.io/home-assistant/home-assistant:2026.11.0@sha256:c6c1ca9931036bf3a2c4cc088d8db25dfea3b33935a5ecc83c40349462e2f69e
+          -m unittest discover -s tests/core -v
+      - name: Run provider tests with the pinned HA Python runtime
+        run: >-
+          docker run --rm
+          --volume "${{ github.workspace }}:/repo:ro"
+          --workdir /repo
+          --env PYTHONDONTWRITEBYTECODE=1
+          --entrypoint python
+          ghcr.io/home-assistant/home-assistant:2026.11.0@sha256:c6c1ca9931036bf3a2c4cc088d8db25dfea3b33935a5ecc83c40349462e2f69e
+          -m unittest discover -s tests/providers -v
+
+  hassfest:
+    name: Home Assistant hassfest
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: home-assistant/actions/hassfest@master
+
+  hacs:
+    name: HACS validation
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: hacs/action@main
+        with:
+          category: integration

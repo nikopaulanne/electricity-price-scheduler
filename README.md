@@ -1,181 +1,65 @@
-# Nordpool Spot Cutoff Optimizer for Home Assistant
+# Electricity Price Scheduler for Home Assistant
 
-**Dynamic load optimization using Nordpool 15-minute spot pricing**
+Find the cheapest hours to run a water heater or charge an EV, or turn on a switch when the electricity price drops below your limit. For electric heating and heat pumps, plan when to preheat, pause during a price spike, and resume. Use the schedules and signals in your Home Assistant automations.
 
-Intelligently reduce electricity consumption during price peaks while maintaining comfort and functionality. Save 10-20% on peak electricity costs.
+> **In development.** The integration is awaiting its first GitHub release. To try it today, use the [isolated test installation](docs/setup.md#local-development-instance).
 
-> Status: v2.0 rollout in progress on branch `release/v2.0.0`. See docs updates and DP-based optimizer details in upcoming commits.
+See the [price source guide](docs/configuration.md#profile-and-price-source) for Nord Pool, Tibber, Octopus Agile, EPEX Spot through sources such as aWATTar, ENTSO-E, and Amber Electric. Scheduling uses the intervals supplied by your source, including 15-minute prices. The guide lists which scenarios each source supports.
 
-## 🎯 What Is This?
+## Quick start
 
-A **Python-based optimization engine** for Home Assistant that:
-- Analyzes Nordpool 15-minute spot prices
-- Finds optimal cutoff periods (when to reduce load)
-- Calculates preheat and recovery phases
-- Outputs schedule as Home Assistant sensors
-- **You integrate it with YOUR specific loads**
+1. [Install Electricity Price Scheduler](docs/setup.md#marketplace-installation) and check your price source.
+2. [Create a Cheap now profile and verify its price signal](docs/setup.md#create-your-first-profile).
+3. Try the [switch example](docs/scenarios.md#first-example-with-a-switch) or choose a [scheduling scenario](docs/scenarios.md) for a water heater, EV charger, or heat pump.
 
-## 💡 Use Cases
+If you already loaded the code in a [local test instance](docs/development/local-testing.md), start at [Create your first profile](docs/setup.md#create-your-first-profile).
 
-This system can optimize **any controllable electrical load**:
+**Already using the Python Script?** Follow the [migration guide](docs/migration.md) to compare the two schedules in parallel, preserve your existing control priorities, and keep a way back.
 
-| Load Type | Use Case | Storage Method |
-|-----------|----------|----------------|
-| **HVAC** | Heat pumps, AC units | Building thermal mass |
-| **Water Heating** | Electric boilers, heat pump water heaters | Water tank |
-| **EV Charging** | Smart charging schedules | Battery |
-| **Pool/Spa** | Heating and filtration | Water thermal mass |
-| **Industrial** | Compressors, refrigeration | Process buffers |
+<!-- ha-marketplace:exclude-start -->
+## Installation
 
-**Key requirement:** Your load must tolerate short interruptions or have energy storage capacity.
+[![Open Electricity Price Scheduler in Home Assistant Marketplace](https://my.home-assistant.io/badges/marketplace_repository.svg)](https://my.home-assistant.io/redirect/marketplace_repository/?owner=nikopaulanne&repository=electricity-price-scheduler&category=integration)
 
-## 📊 How It Works
+Use the badge with Home Assistant 2026.11 or later once the first integration release is published. For manual steps, see [Marketplace installation](docs/setup.md#marketplace-installation).
+<!-- ha-marketplace:exclude-end -->
 
-### 3-Phase Optimization:
+## Heat pump scheduling around price spikes
 
-```
-┌─────────────┬──────────────┬─────────────┐
-│   PREHEAT   │    CUTOFF    │   RECOVERY  │
-├─────────────┼──────────────┼─────────────┤
-│ Store       │ Minimize     │ Return to   │
-│ energy      │ consumption  │ normal      │
-│ (optional)  │ (save €€€)   │ operation   │
-└─────────────┴──────────────┴─────────────┘
-```
+The optimizer compares equal-duration preheat, shutdown, and recovery windows using normalized price slots. It selects at most six non-overlapping periods in the current UI design. The default maximum cutoff is 300 minutes. The minimum price difference defaults to `0.03 EUR/kWh`; a non-EUR source requires a threshold in that selected currency rather than copying the EUR default. These settings describe a model, not a guaranteed bill saving.
 
-1. **Preheat** (optional) - Store energy before expensive period
-2. **Cutoff** - Reduce/stop load during price peaks  
-3. **Recovery** - Gentle return to normal operation
+Modeled savings use a 1 kW reference load. They are not measured or predicted household-euro savings. See [Model and limitations](docs/model.md) for the assumptions.
 
-The optimizer finds the **globally optimal schedule** using Dynamic Programming, testing 100-200 candidates per day.
+## Version guide
 
-## 🚀 Quick Start
+- Existing users of the Python Script can use the [v2.0.0 guide](https://github.com/nikopaulanne/electricity-price-scheduler/tree/v2.0.0) and the [migration guide](docs/migration.md).
+- The current development code is available only in this repository. Both Nord Pool paths have local FI/EUR live-data checks. EPEX Spot and aWATTar also passed isolated live HA checks. For the other price sources, see the source matrix for the data and test method used. See [setup and status](docs/setup.md).
+- The Home Assistant Community Forum thread documents the earlier Python Script solution: [Optimizing HVAC energy savings with Nord Pool 15-minute pricing](https://community.home-assistant.io/t/optimizing-hvac-energy-savings-with-nordpool-15-min-pricing-part-1-3-theory-implementation-and-examples/936741).
 
-### Prerequisites
+## Documentation
 
-- Home Assistant 2024.10+
-- [Nordpool HACS integration](https://github.com/custom-components/nordpool) with 15-min data enabled
-- Python Scripts integration (`python_script:` in configuration.yaml)
-- Controllable load (climate entities, switches, etc.)
+Start at the [documentation index](docs/README.md) for setup, configuration, entities, migration, troubleshooting, and model notes.
 
-### Installation
+<!-- ha-marketplace:exclude-start -->
+## Development
 
-1. **Clone this repository**
-   ```bash
-   cd /config/
-   git clone https://github.com/nikopaulanne/nordpool-spot-cutoff-optimizer.git
-   ```
+The isolated HA 2026.11 development environment and local test commands are documented in [local testing](docs/development/local-testing.md).
 
-2. **Copy Python script**
-   ```bash
-   cp nordpool-spot-cutoff-optimizer/python_scripts/nordpool_cutoff_optimizer.py /config/python_scripts/
-   ```
+## Contributing
 
-3. **Add configuration** (see [Part 3 documentation](docs/03-integration-examples.md))
+See [CONTRIBUTING.md](CONTRIBUTING.md) for the supported local checks and the information useful in a bug report.
+<!-- ha-marketplace:exclude-end -->
 
-4. **Restart Home Assistant**
+## Safety and responsibility
 
-5. **Calibrate parameters** (see [documentation](./docs/03-integration-examples.md#calibration))
+The integration only creates schedule data. Users decide whether and how to connect that data to automations. Validate any separate automation against the equipment manufacturer’s requirements, household comfort, freeze protection, and local safety needs before enabling it.
 
-## 📚 Documentation
+For help with your setup, check [Troubleshooting](docs/troubleshooting.md). Report reproducible problems on [GitHub Issues](https://github.com/nikopaulanne/electricity-price-scheduler/issues).
 
-**3-part series on Home Assistant Community:**
-1. **[Part 1: Theory](https://community.home-assistant.io/t/optimizing-hvac-energy-savings-with-nordpool-15-min-pricing-part-1-3-theory-implementation-and-examples/936741)** - Understanding the concept (using HVAC as example)
-2. **[Part 2: Cutoff Optimizer](https://community.home-assistant.io/t/optimizing-hvac-energy-savings-with-nordpool-15-min-pricing-part-1-3-theory-implementation-and-examples/936741/2)** - Python implementation details
-3. **[Part 3: Integration Examples](https://community.home-assistant.io/t/optimizing-hvac-energy-savings-with-nordpool-15-min-pricing-part-1-3-theory-implementation-and-examples/936741/3)** - How to integrate with YOUR system
+## Acknowledgments
 
-**Full documentation also available in [`docs/`](./docs/) folder.**
+Thanks to the maintainers of [Power Saver](https://github.com/jyourstone/power_saver), [AIO Energy Management](https://github.com/kotope/aio_energy_management), [Heat Pump Cost Optimizer](https://github.com/tvofi/heatpump_optimizer), and other open source projects whose work informed our design. See [what we learned from each project](docs/acknowledgments.md).
 
-## 📈 Real-World Results
+## License
 
-**HVAC Heating Example (Finland, October 2025):**
-
-| Date | Peak Price | Savings | Temperature Impact |
-|------|------------|---------|-------------------|
-| Oct 1 | 36.6 c/kWh | 35.9% | < 0.3°C drop |
-| Oct 3 | 7.66 c/kWh | 18.2% | < 0.5°C drop |
-| **Average** | - | **10-20%** | Minimal |
-
-## 🎛️ Key Configuration Parameters
-
-The optimizer is **load-agnostic**. Core parameters:
-
-| Parameter | Default | Description |
-|-----------|---------|-------------|
-| `base_price_diff` | 3.5 c/kWh | Minimum price difference for 1h cutoff |
-| `max_cutoff_duration` | 4 hours | Maximum cutoff length |
-| `preheat_temp_offset` | +1°C | Preheat amount (HVAC example) |
-| `min_savings_threshold` | 10% | Minimum savings to activate |
-
-**You calibrate these for YOUR specific system.** See [calibration guide](./docs/03-integration-examples.md#calibration).
-
-## 📂 Repository Structure
-
-```
-nordpool-spot-cutoff-optimizer/
-├── README.md                    # This file
-├── docs/                        # Full documentation
-│   ├── 01-theory.md            # Conceptual background
-│   ├── 02-cutoff-optimizer.md  # Python implementation
-│   └── 03-integration-examples.md  # Setup guides
-├── python_scripts/
-│   └── nordpool_cutoff_optimizer.py  # Core optimizer
-├── examples/
-│   ├── hvac/                   # HVAC integration example
-│   ├── water_heater/           # Water heater example
-│   └── ...                     # More examples welcome!
-└── tools/                      # Calibration & analysis tools
-```
-
-## 🖼️ Screenshots
-
-_Coming soon: Dashboard examples, results visualization_
-
-## 🤝 Contributing
-
-**We need YOUR integration examples!**
-
-If you've successfully implemented this for:
-- Different heating/cooling systems
-- Industrial equipment  
-- Smart home devices
-- Other creative uses
-
-Please share! Submit a PR with:
-1. Your configuration files
-2. A README explaining your setup
-3. (Optional) Results/screenshots
-
-See [CONTRIBUTING.md](./CONTRIBUTING.md) for guidelines.
-
-## 📝 License
-
-MIT License - see [LICENSE](./LICENSE) file
-
-## ⚠️ Disclaimer
-
-This is a **scheduling optimizer only**. YOU are responsible for:
-- ✅ Safe implementation for your equipment
-- ✅ Respecting manufacturer guidelines  
-- ✅ Testing thoroughly before production use
-- ✅ Monitoring system behavior
-- ✅ Ensuring comfort and safety
-
-**The authors assume no liability for equipment damage or comfort issues.**
-
-## 🙏 Acknowledgments
-
-- Home Assistant community for feedback and testing
-- Nordpool integration developers
-- All contributors sharing integration examples
-
-## 📞 Support & Discussion
-- **Issues:** [GitHub Issues](https://github.com/nikopaulanne/nordpool-spot-cutoff-optimizer/issues)
-- **Discussion:** [Home Assistant Community Forum](https://community.home-assistant.io/t/optimizing-hvac-energy-savings-with-nordpool-15-min-pricing-part-1-3-theory-implementation-and-examples/936741)
-- **Documentation:** See [`docs/`](./docs/) folder
-
----
-
-**⭐ If this project helps you save energy, please star the repository!**
-
-**💬 Share your results and setup in the discussions!**
+MIT; see [LICENSE](LICENSE).

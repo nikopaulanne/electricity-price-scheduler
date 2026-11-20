@@ -1,0 +1,12 @@
+{
+  "domain": "electricity_price_scheduler",
+  "name": "Electricity Price Scheduler",
+  "categories": ["helpers.calculate_value", "energy.energy_prices"],
+  "codeowners": ["@nikopaulanne"],
+  "config_flow": true,
+  "documentation": "https://github.com/nikopaulanne/electricity-price-scheduler",
+  "integration_type": "helper",
+  "iot_class": "calculated",
+  "issue_tracker": "https://github.com/nikopaulanne/electricity-price-scheduler/issues",
+  "version": "3.0.0.dev1"
+}

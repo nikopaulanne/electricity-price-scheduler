@@ -1,5 +1,7 @@
 # Part 2: The Cutoff Optimizer - Python Implementation
 
+> This page describes the original Python Script (v2). For Electricity Price Scheduler, see the [integration guides](README.md).
+
 *Part 2 of 3: Technical Deep-Dive*
 
 > **This document covers the core optimization algorithm and Home Assistant integration.**  

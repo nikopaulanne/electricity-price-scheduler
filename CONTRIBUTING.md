@@ -1,122 +1,51 @@
-# Contributing to Nordpool Spot Cutoff Optimizer
+# Contributing
 
-Thank you for your interest in contributing! This project thrives on community input, especially **real-world integration examples**.
+This repository contains a legacy Python Script and an in-development Home Assistant custom integration. No public integration release or Marketplace listing exists yet. Keep changes for the legacy script separate from the new integration and do not overwrite its entity IDs.
 
-## How to Contribute
+## Local checks
 
-### 1. Share Your Integration Example
+The supported host environment uses Python 3.14 and `uv`:
 
-The most valuable contribution is **showing how YOU integrated this with YOUR system**.
-
-**To contribute an example:**
-
-1. Fork this repository
-2. Create a folder: `examples/your_system_name/`
-3. Include:
-   - `README.md` - Describe your setup, equipment, results
-   - `configuration.yaml` - Your sensor/input configurations
-   - `automations.yaml` - Your automation logic
-   - `lovelace.yaml` (optional) - Dashboard example
-   - `images/` (optional) - Screenshots of results
-
-4. Submit a Pull Request
-
-**Examples we'd love to see:**
-- Different HVAC brands (Mitsubishi, Daikin, etc.)
-- Hybrid heating systems (multiple heat sources)
-- Water heaters with different control methods
-- EV charging integration
-- Pool/spa heating
-- Industrial equipment
-- Multi-load coordination
-
-### 2. Improve Documentation
-
-- Fix typos or unclear explanations
-- Add translations
-- Create diagrams or illustrations
-- Write tutorials
-
-### 3. Enhance Code
-
-- Bug fixes
-- Performance improvements
-- New features (discuss in Issues first)
-- Better error handling
-
-### 4. Report Issues
-
-Found a bug? Have a question? [Open an Issue](../../issues)
-
-**Good bug reports include:**
-- Home Assistant version
-- Nordpool integration version
-- Error logs (remove sensitive data!)
-- Steps to reproduce
-- Expected vs actual behavior
-
-## Code Style
-
-- Python: Follow PEP 8
-- YAML: 2-space indentation
-- Comments: Explain WHY, not just WHAT
-- Variable names: Clear and descriptive
-
-## Testing
-
-Before submitting:
-- Test your changes in a real Home Assistant environment
-- Verify no breaking changes to existing functionality
-- Document any new parameters or configuration
-
-## Pull Request Process
-
-1. **Fork & Branch**: Create a feature branch from `main`
-2. **Commit**: Use clear commit messages
-3. **Test**: Verify everything works
-4. **Document**: Update README/docs if needed
-5. **Submit PR**: Explain what and why
-6. **Be patient**: Reviews may take a few days
-
-## Example PR Description Template
-
-```markdown
-## Description
-[What does this PR do?]
-
-## Motivation
-[Why is this change needed?]
-
-## Type of Change
-- [ ] Bug fix
-- [ ] New feature
-- [ ] Integration example
-- [ ] Documentation
-- [ ] Other (please describe)
-
-## Testing
-[How did you test this?]
-
-## Screenshots (if applicable)
-[Add screenshots of results, dashboards, etc.]
-
-## Checklist
-- [ ] My code follows the style guidelines
-- [ ] I have tested this in a real HA environment
-- [ ] I have updated documentation
-- [ ] My changes don't break existing functionality
+```sh
+uv sync --group dev
+uv run ruff check custom_components tests
+uv run python -m unittest discover -s tests/core -v
+uv run python -m unittest discover -s tests/providers -v
 ```
 
-## Questions?
+To run the existing tests inside the real HA 2026.11.0 Python runtime, start the isolated instance using [local-testing.md](docs/development/local-testing.md), then run:
 
-Ask in:
-- [GitHub Discussions](../../discussions)
-- [Home Assistant Community Forum](https://community.home-assistant.io/t/optimizing-hvac-energy-savings-with-nordpool-15-min-pricing-the-theory-part-1-of-3-understanding-the-concept/936741)
+```sh
+scripts/dev/sync-ha.sh
+scripts/dev/python-ha.sh -m unittest discover -s /config/dev-tests -p 'test_*.py' -v
+scripts/dev/python-ha.sh -m unittest discover -s /config/dev-tests/core -v
+scripts/dev/python-ha.sh -m unittest discover -s /config/dev-tests/providers -v
+```
+
+HA flow, lifecycle, and entity tests must use the actual supported HA APIs; do not replace `homeassistant` modules with test-only fakes. Provider fixtures and mocked action responses are valuable but do not count as live price-source validation. Report `community fixture`, `community live`, `core action mocked`, or `core live` accurately.
+
+The GitHub validation workflow runs Home Assistant hassfest and HACS validation. Additions to manifests, translations, or repository metadata should pass both checks before review.
+
+## Bug reports
+
+Include:
+
+- Home Assistant and optimizer versions, or commit hash for a local build.
+- Provider type and provider version, market area, configured currency, and declared price unit.
+- Expected result, observed result, and a short reproducible sequence.
+- Relevant redacted log lines and one representative price interval, including the runtime type of timestamp fields when time parsing is involved.
+- Whether the report came from fixture tests, mocked action tests, the isolated HA container, or a live price source.
+
+Do not attach access tokens, full configuration backups, unredacted diagnostics, or complete Home Assistant state dumps.
+
+## Pull requests
+
+Keep changes narrowly scoped. Update versioned docs when behavior changes, add regression coverage for data normalization/availability, and explain what was tested. Do not claim that code is Marketplace-available, a live provider is supported, or modeled savings are realized savings without evidence from the corresponding release/test gate.
+
+The optimizer does not control devices. Contributions that add equipment control or automate migration require a separate design review.
+
+If another open source project informed a design decision, link it in the pull request and add a short note to [Acknowledgments](docs/acknowledgments.md). Describe the specific idea that informed the work. For reused code, assets, or documentation, record the upstream path and revision, identify the license, and retain the required attribution and notices with the reused material.
 
 ## License
 
-By contributing, you agree that your contributions will be licensed under the MIT License.
-
----
-
-**Thank you for helping make energy optimization accessible to everyone! 🙌**
+Contributions are made under the MIT License in [LICENSE](LICENSE).
