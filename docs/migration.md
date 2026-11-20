@@ -1,6 +1,6 @@
 # Migrate from the v2 Python Script
 
-Use this guide once you have an installable v3 release. The current development build is local. See [setup and availability](setup.md) for the supported test environment. V3 creates its own entities and leaves the script, helpers, and automations in place.
+Start by [installing v3 or later](setup.md#marketplace-installation). The integration creates its own entities and leaves the script, helpers, and automations in place.
 
 ## 1. Inventory your existing setup
 

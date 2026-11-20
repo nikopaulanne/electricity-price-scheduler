@@ -1,6 +1,6 @@
 # Electricity Price Scheduler guides
 
-Start with the [quick start](../README.md#quick-start). The development build offers multiple price sources. The [source matrix](configuration.md#profile-and-price-source) explains which integrations supply the prices and how each path was tested.
+Start with the [quick start](../README.md#quick-start). The [source matrix](configuration.md#profile-and-price-source) explains which integrations supply the prices and how each path was tested.
 
 Home Assistant displays the integration in English, Finnish, Swedish, or German according to your [language setting](setup.md#interface-language).
 

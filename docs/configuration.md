@@ -1,6 +1,6 @@
 # Configuration reference
 
-This describes the setup and options of the local development integration.
+The options available for a profile depend on the scenario and price source you select.
 
 ## Profile and price source
 

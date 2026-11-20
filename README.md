@@ -2,7 +2,7 @@
 
 Find the cheapest hours to run a water heater or charge an EV, or turn on a switch when the electricity price drops below your limit. For electric heating and heat pumps, plan when to preheat, pause during a price spike, and resume. Use the schedules and signals in your Home Assistant automations.
 
-> **In development.** The integration is awaiting its first GitHub release. To try it today, use the [isolated test installation](docs/setup.md#local-development-instance).
+The integration requires Home Assistant 2026.11 or later and a v3 or newer [GitHub release](https://github.com/nikopaulanne/electricity-price-scheduler/releases). To try a development build, use the [isolated test installation](docs/setup.md#local-development-instance).
 
 See the [price source guide](docs/configuration.md#profile-and-price-source) for Nord Pool, Tibber, Octopus Agile, EPEX Spot through sources such as aWATTar, ENTSO-E, and Amber Electric. Scheduling uses the intervals supplied by your source, including 15-minute prices. The guide lists which scenarios each source supports.
 
@@ -21,7 +21,7 @@ If you already loaded the code in a [local test instance](docs/development/local
 
 [![Open Electricity Price Scheduler in Home Assistant Marketplace](https://my.home-assistant.io/badges/marketplace_repository.svg)](https://my.home-assistant.io/redirect/marketplace_repository/?owner=nikopaulanne&repository=electricity-price-scheduler&category=integration)
 
-Use the badge with Home Assistant 2026.11 or later once the first integration release is published. For manual steps, see [Marketplace installation](docs/setup.md#marketplace-installation).
+Use the badge to open the repository in Marketplace. For version selection and manual setup, see [Marketplace installation](docs/setup.md#marketplace-installation).
 <!-- ha-marketplace:exclude-end -->
 
 ## Heat pump scheduling around price spikes
@@ -33,7 +33,7 @@ Modeled savings use a 1 kW reference load. They are not measured or predicted ho
 ## Version guide
 
 - Existing users of the Python Script can use the [v2.0.0 guide](https://github.com/nikopaulanne/electricity-price-scheduler/tree/v2.0.0) and the [migration guide](docs/migration.md).
-- The current development code is available only in this repository. Both Nord Pool paths have local FI/EUR live-data checks. EPEX Spot and aWATTar also passed isolated live HA checks. For the other price sources, see the source matrix for the data and test method used. See [setup and status](docs/setup.md).
+- For v3 and later, the [source matrix](docs/configuration.md#profile-and-price-source) shows which price sources each scenario supports and how they were tested.
 - The Home Assistant Community Forum thread documents the earlier Python Script solution: [Optimizing HVAC energy savings with Nord Pool 15-minute pricing](https://community.home-assistant.io/t/optimizing-hvac-energy-savings-with-nordpool-15-min-pricing-part-1-3-theory-implementation-and-examples/936741).
 
 ## Documentation
