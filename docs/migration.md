@@ -4,13 +4,13 @@ Start by [installing v3 or later](setup.md#marketplace-installation). The integr
 
 ## 1. Inventory your existing setup
 
-- Find the price sensor the script actually used. Check `nordpool_entity` on `sensor.nordpool_cutoff_periods_python`. If this points to a template or proxy, find the underlying community Nordpool sensor and check whether the proxy changes the prices. V3's picker lists sensors provided by the Nordpool integration.
+- Find the price sensor the script actually used. Check `nordpool_entity` on `sensor.nordpool_cutoff_periods_python`. If this points to a template or proxy, check whether it changes the underlying prices and whether it supplies the full price series. In v3.0.1 or later you can keep a compatible proxy by selecting [**My price sensor**](configuration.md#use-your-own-price-sensor).
 - Search for the old schedule entity and any template sensors that wrap it. Check automations, scripts, dashboards, helpers, and any external flows for references to those IDs. Include notification templates and custom cards.
 - Check which automations **write** the old input helpers, which **run** the script, and which **consume** the result. Save copies of each configuration you plan to change so you can restore it during rollback.
 
 ## 2. Set up a separate profile and compare
 
-Keep the existing price integration and legacy control chain active during comparison. In **Settings → Devices & services → Helpers → Create helper**, choose **Electricity Price Scheduler → Heating and heat pump**. Select the same underlying community Nordpool price sensor and enter the corresponding settings below. For a local rehearsal, [load the legacy script into the test container](development/local-testing.md#rehearse-migration-from-the-legacy-script).
+Keep the existing price integration and legacy control chain active during comparison. In **Settings → Devices & services → Helpers → Create helper**, choose **Electricity Price Scheduler → Heating and heat pump**. Select the same community Nordpool price sensor or compatible proxy used by the script and enter the corresponding settings below. For a local rehearsal, [load the legacy script into the test container](development/local-testing.md#rehearse-migration-from-the-legacy-script).
 
 | Legacy input | V3 setting |
 | --- | --- |

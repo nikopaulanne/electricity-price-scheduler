@@ -55,6 +55,7 @@ from .providers import (
     ProviderError,
     ProviderUnavailableError,
     async_fetch_snapshot,
+    custom_price_coverage_expired,
     provider_config,
     source_entities,
 )
@@ -214,6 +215,8 @@ class OptimizerCoordinator(DataUpdateCoordinator[RuntimeSnapshot]):
                     source,
                     today_local=today_local,
                 )
+                if custom_price_coverage_expired(snapshot, now_utc):
+                    raise ProviderUnavailableError("Custom price sensor coverage has expired")
                 self._last_success = now_utc
                 multipliers = _resolve_entry_multipliers(self.hass, options)
                 locked = self._locked_period
@@ -408,6 +411,11 @@ class OptimizerCoordinator(DataUpdateCoordinator[RuntimeSnapshot]):
             self._schedule_next_transition()
             return
         now_utc = now.astimezone(_UTC) if now.tzinfo else dt_util.utcnow()
+        if self.data.price_snapshot and custom_price_coverage_expired(
+            self.data.price_snapshot, now_utc
+        ):
+            await self.async_refresh()
+            return
         if self._locked_period is not None and now_utc >= self._locked_period.recovery_end:
             # A daily source rotation and a finished lock release the reserved
             # K slot. Replan from cached prices; do not refetch at a phase edge.
@@ -534,6 +542,12 @@ class OptimizerCoordinator(DataUpdateCoordinator[RuntimeSnapshot]):
                 )
                 if value > now
             )
+        prices = runtime.price_snapshot
+        if (
+            prices and prices.provider == "custom_price_sensor"
+            and prices.coverage_end is not None and prices.coverage_end > now
+        ):
+            boundaries.append(prices.coverage_end)
         if not boundaries:
             return
         next_transition = min(boundaries)

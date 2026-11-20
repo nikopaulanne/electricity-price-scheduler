@@ -4,7 +4,7 @@ Find the cheapest hours to run a water heater or charge an EV, or turn on a swit
 
 The integration requires Home Assistant 2026.11 or later and a v3 or newer [GitHub release](https://github.com/nikopaulanne/electricity-price-scheduler/releases). To try a development build, use the [isolated test installation](docs/setup.md#local-development-instance).
 
-See the [price source guide](docs/configuration.md#profile-and-price-source) for Nord Pool, Tibber, Octopus Agile, EPEX Spot through sources such as aWATTar, ENTSO-E, and Amber Electric. Scheduling uses the intervals supplied by your source, including 15-minute prices. The guide lists which scenarios each source supports.
+See the [price source guide](docs/configuration.md#profile-and-price-source) for Nord Pool, Tibber, Octopus Agile, EPEX Spot through sources such as aWATTar, ENTSO-E, Amber Electric, and compatible custom price sensors. Scheduling uses the intervals supplied by your source, including 15-minute prices. The guide lists which scenarios each source supports.
 
 ## Quick start
 

@@ -132,7 +132,3 @@ def discover_price_sources(
             add("Tibber", "tibber", **fields)
 
     return choices
-
-
-def has_market_sources(choices: Mapping[str, tuple[str, dict[str, Any]]]) -> bool:
-    return any(data["provider_type"] != "community_nordpool" for _, data in choices.values())

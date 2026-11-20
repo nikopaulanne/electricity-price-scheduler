@@ -146,13 +146,17 @@
       },
       "market_source": {
         "title": "Choose a scenario and price source",
-        "description": "Choose what to optimize. If there is only one available electricity price source, it is preselected. Check whether the source includes taxes and fees before setting a price limit.",
+        "description": "Choose what to optimize. If one price source is detected, it is preselected. Select **My price sensor** to use a compatible price series from a template or proxy sensor. Check whether prices include taxes and fees before setting a price limit.",
         "data": {
           "scenario": "What do you want to use the price for?",
           "currency": "Currency",
           "unit_override": "Price unit used by the sensor",
           "price_source": "Price source",
-          "home_name": "Tibber home name"
+          "home_name": "Tibber home name",
+          "price_entity_id": "Price sensor"
+        },
+        "data_description": {
+          "price_entity_id": "Select a sensor with prices in raw_today and, if available, raw_tomorrow. Each interval needs a start time, an end time, and a price."
         }
       },
       "market_reconfigure": {
@@ -165,13 +169,24 @@
           "threshold_price_per_kwh": "Cheap price limit",
           "price_ceiling_per_kwh": "Maximum price",
           "price_source": "Price source",
-          "home_name": "Tibber home name"
+          "home_name": "Tibber home name",
+          "price_entity_id": "Price sensor"
+        },
+        "data_description": {
+          "price_entity_id": "Select a sensor with prices in raw_today and, if available, raw_tomorrow. Each interval needs a start time, an end time, and a price."
+        }
+      },
+      "custom_price_preview": {
+        "title": "Review your price sensor",
+        "description": "Current price: {current_price} {currency}/kWh. Intervals available for scheduling: {slot_count}. The last published interval ends at {coverage_end} (Home Assistant local time).",
+        "data": {
+          "continue": "Use this price sensor"
         }
       }
     },
     "error": {
       "base": "The selected source or settings could not be validated.",
-      "price_entity_id": "Select an available Nordpool sensor.",
+      "price_entity_id": "Select an available price sensor.",
       "currency": "Select the currency used by this sensor.",
       "unit_override": "Choose the price unit used by the sensor.",
       "min_price_diff_per_kwh": "Enter a new threshold because the source currency changed.",
@@ -199,7 +214,8 @@
       "currency_change_with_price_helper": "In the profile options, clear the Minimum price difference helper field before changing currency.",
       "tibber_home_required": "There is more than one active Tibber home. Enter the home name as shown in Tibber.",
       "tibber_home_not_found": "Check the Tibber home name, including its spelling.",
-      "threshold_only_source": "Amber Electric works with Cheap now only. Choose Cheap now or select another price source."
+      "threshold_only_source": "Amber Electric works with Cheap now only. Choose Cheap now or select another price source.",
+      "custom_price_coverage_expired": "All price intervals from this sensor have expired. Check the source for updated prices."
     },
     "abort": {
       "reconfigure_successful": "The price source was updated.",
@@ -310,6 +326,11 @@
         "fri": "Friday",
         "sat": "Saturday",
         "sun": "Sunday"
+      }
+    },
+    "custom_price_source": {
+      "options": {
+        "custom_price_sensor": "My price sensor"
       }
     }
   },

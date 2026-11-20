@@ -9,7 +9,7 @@ from __future__ import annotations
 
 from collections.abc import Mapping
 from dataclasses import dataclass
-from datetime import date
+from datetime import date, datetime
 from typing import TYPE_CHECKING, Protocol, TypeAlias
 
 from ..core.models import PriceSnapshot
@@ -57,13 +57,14 @@ class CoreNordpoolConfig:
 
 @dataclass(frozen=True, slots=True)
 class CommunityNordpoolConfig:
-    """Selection for the community ``custom-components/nordpool`` sensor."""
+    """Selection for a sensor using the community Nordpool interval format."""
 
     price_entity_id: str
     currency: str
     # An explicit full source unit (for example ``NOK/kWh`` or ``øre/kWh``).
     # Use only when the entity's unit metadata is absent or ambiguous.
     unit_override: str | None = None
+    custom_price_sensor: bool = False
 
     @property
     def provider_type(self) -> str:
@@ -127,7 +128,10 @@ def provider_config(data: Mapping[str, object]) -> ProviderConfig:
     if provider_type == "community_nordpool":
         unit = data.get("unit_override")
         return CommunityNordpoolConfig(
-            required("price_entity_id"), currency, unit if isinstance(unit, str) else None,
+            required("price_entity_id"),
+            currency,
+            unit if isinstance(unit, str) else None,
+            custom_price_sensor=data.get("custom_price_sensor") is True,
         )
     if provider_type == "core_nordpool":
         return CoreNordpoolConfig(
@@ -234,4 +238,13 @@ async def async_fetch_snapshot(
     """Fetch and normalize one bounded today/tomorrow price snapshot."""
     return await get_provider(config.provider_type).async_fetch_snapshot(
         hass, config, today_local=today_local
+    )
+
+
+def custom_price_coverage_expired(snapshot: PriceSnapshot, now: datetime) -> bool:
+    """Return whether a custom sensor's last published interval has ended."""
+    return (
+        snapshot.provider == "custom_price_sensor"
+        and snapshot.coverage_end is not None
+        and snapshot.coverage_end <= now
     )

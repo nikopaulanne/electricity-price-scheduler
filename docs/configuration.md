@@ -15,8 +15,23 @@ Each config entry represents one named profile. Install and configure the price 
 | Octopus Energy Agile UK | The standard electricity **Current Day Rates** event. Enable it and the matching **Next Day Rates** event in Octopus Energy. Prices use GBP/kWh including VAT. | Public Agile UK tariff rates replayed as HA rate events. |
 | Tibber | One configured Tibber account. When it has multiple active homes, enter the home name and verify the price currency. Uses Tibber's tax-inclusive total price. | SEK prices from Tibber’s public developer demo replayed through the HA action format. |
 | Amber Electric | The **General** or **Controlled Load** current price sensor, in AUD/kWh. **Cheap now** uses the current sensor to decide whether to run. Forecast prices provide a preview. | Archived real Amber current and forecast prices replayed through HA formats. Five-minute intervals covered by contract tests. Live retail access requires an Amber account. |
+| My price sensor | A Home Assistant sensor with Nordpool-compatible `raw_today` data; `raw_tomorrow` is optional. The selected unit and currency apply to the sensor's prices. | The production FI/EUR proxy data has been replayed through the optimizer. A replay does not verify an actual upstream outage. |
 
 Prices are kept in each source's currency. When switching between spot and retail sources, check the displayed current price and your price limit before connecting an automation. Amber's forecast is cut to a maximum of 200 price slots to bound work on small hosts.
+
+### Use your own price sensor
+
+Select **My price sensor** when your price source is a template sensor, a proxy, or another Home Assistant sensor that exposes a Nordpool-compatible price series. This lets you keep using a sensor shared by other automations.
+
+1. In **Price source**, choose **My price sensor**, then select **Submit** to open the sensor picker.
+2. Select your sensor and confirm its currency and price unit if prompted. If its series is in euro cents per kWh, select `snt/kWh`.
+3. Review the current price in currency per kWh and the end of the last published interval. Keep **Use this price sensor** on and select **Submit**. For an existing profile, open **Reconfigure** to use the same source picker.
+
+The sensor must expose a `raw_today` list and may expose a `raw_tomorrow` list. Each price row contains `start`, `end`, and numeric `value` fields. Select the unit and currency that match the values published by the sensor. Where the value's unit cannot be inferred from its attributes, choose a full unit such as `EUR/kWh`, `EUR/MWh`, or `snt/kWh`. Check whether values already include VAT, grid fees, or other modifiers before comparing them with your price limit.
+
+The source is read locally from Home Assistant state. State or attribute changes on the chosen sensor trigger recalculation. The integration identifies the local dates from interval timestamps, including when today's prices are still in `raw_tomorrow` after midnight. During an upstream outage, it can use intervals the proxy continues to expose for the current and next local day. After Home Assistant restarts, the integration reads the sensor's attributes again. If the source becomes unavailable or its published price coverage ends, the schedule and phase become unavailable.
+
+Use a proxy whose freshness and recovery behavior you understand. Confirm the displayed price, currency, units, and coverage before connecting any schedule to device controls.
 
 ## Optimizer options
 

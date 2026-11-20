@@ -22,6 +22,7 @@ from .providers import (
     ProviderError,
     ProviderUnavailableError,
     async_fetch_snapshot,
+    custom_price_coverage_expired,
     provider_config,
     source_entities,
 )
@@ -125,6 +126,8 @@ class PriceCoordinator(DataUpdateCoordinator[PriceRuntimeSnapshot]):
                 snapshot = await async_fetch_snapshot(
                     self.hass, provider, today_local=dt_util.now().date()
                 )
+                if custom_price_coverage_expired(snapshot, now):
+                    raise ProviderUnavailableError("Custom price sensor coverage has expired")
                 if not self._active or generation != self._generation:
                     return self.data or _unavailable("source_unavailable", "source_unavailable", now)
                 self._price_snapshot = snapshot
@@ -286,7 +289,13 @@ class PriceCoordinator(DataUpdateCoordinator[PriceRuntimeSnapshot]):
             await self.async_request_refresh()
 
     async def _async_handle_transition(self, now: datetime) -> None:
-        if self.entry.data.get("provider_type") == "amber" and self._active:
+        if self._active and (
+            self.entry.data.get("provider_type") == "amber"
+            or (
+                self._price_snapshot is not None
+                and custom_price_coverage_expired(self._price_snapshot, now)
+            )
+        ):
             await self.async_refresh()
             return
         async with self._update_lock:
@@ -352,6 +361,12 @@ class PriceCoordinator(DataUpdateCoordinator[PriceRuntimeSnapshot]):
         if runtime.result is not None and runtime.result.next_transition is not None:
             if runtime.result.next_transition > now:
                 boundaries.append(runtime.result.next_transition)
+        prices = runtime.price_snapshot
+        if (
+            prices.provider == "custom_price_sensor"
+            and prices.coverage_end is not None and prices.coverage_end > now
+        ):
+            boundaries.append(prices.coverage_end)
         if not boundaries:
             return
         next_transition = min(boundaries)

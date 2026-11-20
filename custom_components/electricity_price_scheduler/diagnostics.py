@@ -27,7 +27,10 @@ async def async_get_config_entry_diagnostics(
     options = entry.options
     scenario = entry.data.get("scenario", "hvac")
     diagnostics: dict[str, Any] = {
-        "provider_type": entry.data.get("provider_type"),
+        "provider_type": (
+            "custom_price_sensor" if entry.data.get("custom_price_sensor") is True
+            else entry.data.get("provider_type")
+        ),
         "currency": entry.data.get("currency"),
         "scenario": scenario,
         "options": {

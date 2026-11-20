@@ -1,4 +1,4 @@
-"""Adapter for the community ``custom-components/nordpool`` integration.
+"""Adapter for community Nordpool and user-selected compatible price sensors.
 
 This reads only the selected entity's public state attributes. The source's
 ``raw_today`` values are already transformed by that integration and may
@@ -9,6 +9,7 @@ from __future__ import annotations
 
 from collections.abc import Iterator, Mapping
 from datetime import date
+from itertools import chain
 
 from ..const import DOMAIN
 from ..core.models import PriceSnapshot
@@ -16,6 +17,7 @@ from ..core.normalization import PriceDataError, normalize_slots
 from ._helpers import (
     bounded_rows,
     local_timezone,
+    parse_aware_datetime,
     row_field,
     rows_for_local_dates,
     total_rows_within_limit,
@@ -98,12 +100,25 @@ class CommunityNordpoolProvider:
 
         tomorrow_local = date.fromordinal(today_local.toordinal() + 1)
         local_dates = {today_local, tomorrow_local}
-        today_rows = tuple(
-            rows_for_local_dates(raw_today, dates={today_local}, timezone=zone)
-        )
-        tomorrow_rows = tuple(
-            rows_for_local_dates(raw_tomorrow, dates={tomorrow_local}, timezone=zone)
-        )
+        if config.custom_price_sensor:
+            # A proxy can keep yesterday's published attributes during an
+            # outage. Use today's intervals even if they are still in raw_tomorrow.
+            today_rows = []
+            tomorrow_rows = []
+            for row in chain(raw_today, raw_tomorrow):
+                start = parse_aware_datetime(row_field(row, "start"), field="start")
+                local_date = start.astimezone(zone).date()
+                if local_date == today_local:
+                    today_rows.append(row)
+                elif local_date == tomorrow_local:
+                    tomorrow_rows.append(row)
+        else:
+            today_rows = tuple(
+                rows_for_local_dates(raw_today, dates={today_local}, timezone=zone)
+            )
+            tomorrow_rows = tuple(
+                rows_for_local_dates(raw_tomorrow, dates={tomorrow_local}, timezone=zone)
+            )
         if not today_rows:
             raise ProviderUnavailableError(
                 "Selected Nordpool sensor has no prices for the current HA-local day"
@@ -114,7 +129,7 @@ class CommunityNordpoolProvider:
             currency=configured_currency,
             unit_override=config.unit_override,
         )
-        all_rows = _adapt_rows(today_rows, tomorrow_rows, value_divisor=divisor)
+        all_rows = _adapt_rows(chain(today_rows, tomorrow_rows), value_divisor=divisor)
         try:
             slots = normalize_slots(
                 all_rows, source_unit=source_unit, currency=configured_currency
@@ -141,7 +156,7 @@ class CommunityNordpoolProvider:
         snapshot = PriceSnapshot(
             slots=slots,
             currency=configured_currency,
-            provider="community_nordpool",
+            provider="custom_price_sensor" if config.custom_price_sensor else "community_nordpool",
             coverage_start=slots[0].start if slots else None,
             coverage_end=slots[-1].end if slots else None,
             tomorrow_available=bool(tomorrow_rows),
@@ -190,12 +205,11 @@ def _source_unit_and_divisor(
 
 
 def _adapt_rows(
-    today_rows: tuple[object, ...],
-    tomorrow_rows: tuple[object, ...],
+    rows: Iterator[object],
     *,
     value_divisor: float,
 ) -> Iterator[object]:
-    for row in (*today_rows, *tomorrow_rows):
+    for row in rows:
         if value_divisor == 1.0:
             yield row
             continue
