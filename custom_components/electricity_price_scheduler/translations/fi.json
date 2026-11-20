@@ -1,0 +1,878 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Valitse skenaario ja hintalähde",
+        "description": "Valitse, mihin käytät hintatietoa. Jos käytettävissä on vain yksi sähkön hintalähde, se on valittu valmiiksi.",
+        "data": {
+          "scenario": "Mihin haluat käyttää hintatietoa?",
+          "price_entity_id": "Nordpool-hinta-anturi",
+          "currency": "Valuutta",
+          "unit_override": "Anturin käyttämä hinnan yksikkö"
+        }
+      },
+      "settings": {
+        "title": "Määritä aikataulu",
+        "description": "Hintoja verrataan yksikössä {currency}/kWh. Vähimmäishintaero on valittua valuuttaa kilowattituntia kohti. Säästö on 1 kW:n vertailukuormalle laskettu malli, ei lupaus sähkölaskun pienentymisestä.",
+        "data": {
+          "profile_name": "Profiilin nimi",
+          "max_cutoff_minutes": "Katkaisun enimmäiskesto",
+          "min_price_diff_per_kwh": "Vähimmäishintaero kilowattituntia kohti",
+          "max_periods": "Jaksojen enimmäismäärä aikataulussa",
+          "multiplier_mode": "Esilämmityksen ja palautumisen malli",
+          "preheat_factor": "Kiinteä esilämmityskerroin",
+          "recovery_factor": "Kiinteä palautumiskerroin",
+          "temperature_entity_id": "Ulkolämpötila-anturi"
+        }
+      },
+      "reconfigure": {
+        "title": "Vaihda Nordpool-hintalähde",
+        "description": "Valitse ja tarkista uusi anturi. Jos sen valuutta vaihtuu, anna uusi kynnysarvo tässä valuutassa; valuuttamuunnosta ei tehdä.",
+        "data": {
+          "price_entity_id": "Nordpool-hinta-anturi",
+          "currency": "Valuutta",
+          "unit_override": "Anturin käyttämä hinnan yksikkö",
+          "min_price_diff_per_kwh": "Uusi vähimmäishintaero kilowattituntia kohti",
+          "threshold_price_per_kwh": "Halvan hinnan raja",
+          "price_ceiling_per_kwh": "Enimmäishinta"
+        }
+      },
+      "price_setup": {
+        "title": "Määritä hintaprofiili",
+        "description": "Hintayksikkö on {currency}/kWh. Euroissa 5 snt/kWh merkitään arvolla 0,05. Jos asetat yli keskiyön jatkuvan aikaikkunan, valitse loppuaika alkuaikaa aikaisemmaksi.",
+        "data": {
+          "profile_name": "Profiilin nimi",
+          "threshold_price_per_kwh": "Halvan hinnan raja",
+          "required_duration_minutes": "Käyntiaika yhteensä",
+          "window_start": "Aikaisin aloitus",
+          "window_end": "Valmis viimeistään",
+          "weekdays": "Viikonpäivät",
+          "mode": "Käyntiajan suunnittelu",
+          "min_run_minutes": "Jaetun käyntijakson vähimmäiskesto",
+          "price_ceiling_per_kwh": "Enimmäishinta",
+          "fallback": "Jos hintaraja estää riittävän käyntiajan"
+        }
+      },
+      "price_preview_empty": {
+        "title": "Tarkista profiilisi",
+        "description": "Nykyisillä hinnoilla ja asetuksilla ei löytynyt käyntijaksoa. Tarkista asetukset tai tallenna profiili ja katso sen tila.\n\nAvaa tallentamasi profiili ja tarkista signaali sekä aikataulu. Katso, [miten signaalia käytetään automaatiossa]({automation_guide_url}).",
+        "data": {
+          "edit": "Palaa asetuksiin"
+        }
+      },
+      "price_preview_unavailable": {
+        "title": "Tarkista profiilisi",
+        "description": "Esikatselua ei ole saatavilla. Tarkista, onko valitulla hintalähteellä ajantasaiset hinnat.\n\nAvaa tallentamasi profiili ja tarkista signaali sekä aikataulu. Katso, [miten signaalia käytetään automaatiossa]({automation_guide_url}).",
+        "data": {
+          "edit": "Palaa asetuksiin"
+        }
+      },
+      "price_preview_threshold_active": {
+        "title": "Tarkista profiilisi",
+        "description": "Hinta nyt: {current_price} {currency}/kWh. Rajasi: {threshold} {currency}/kWh. **Käytä sähköä nyt** olisi päällä.\n\nAvaa tallentamasi profiili ja tarkista signaali sekä aikataulu. Katso, [miten signaalia käytetään automaatiossa]({automation_guide_url}).",
+        "data": {
+          "edit": "Palaa asetuksiin"
+        }
+      },
+      "price_preview_threshold_scheduled": {
+        "title": "Tarkista profiilisi",
+        "description": "Signaali olisi nyt pois päältä. Seuraava hinta, joka on enintään {threshold} {currency}/kWh, alkaa {next_start} (Home Assistantin paikallista aikaa).\n\nAvaa tallentamasi profiili ja tarkista signaali sekä aikataulu. Katso, [miten signaalia käytetään automaatiossa]({automation_guide_url}).",
+        "data": {
+          "edit": "Palaa asetuksiin"
+        }
+      },
+      "price_preview_threshold_above": {
+        "title": "Tarkista profiilisi",
+        "description": "Hinta nyt: {current_price} {currency}/kWh. Se ylittää rajasi {threshold} {currency}/kWh. Signaali olisi pois päältä.\n\nAvaa tallentamasi profiili ja tarkista signaali sekä aikataulu. Katso, [miten signaalia käytetään automaatiossa]({automation_guide_url}).",
+        "data": {
+          "edit": "Palaa asetuksiin"
+        }
+      },
+      "price_preview_schedule_active": {
+        "title": "Tarkista profiilisi",
+        "description": "Ensimmäisen käyntijakson aika on nyt: {start} – {end}. Käyntiaikaa on suunniteltu {planned_duration} minuuttia.\n\nAvaa tallentamasi profiili ja tarkista signaali sekä aikataulu. Katso, [miten signaalia käytetään automaatiossa]({automation_guide_url}).",
+        "data": {
+          "edit": "Palaa asetuksiin"
+        }
+      },
+      "price_preview_schedule_scheduled": {
+        "title": "Tarkista profiilisi",
+        "description": "Ensimmäinen käyntijakso Home Assistantin paikallista aikaa: {start} – {end}. Aikataulussa on {planned_duration} minuuttia pyytämästäsi {required_duration} minuutista.\n\nAvaa tallentamasi profiili ja tarkista signaali sekä aikataulu. Katso, [miten signaalia käytetään automaatiossa]({automation_guide_url}).",
+        "data": {
+          "edit": "Palaa asetuksiin"
+        }
+      },
+      "price_preview_waiting": {
+        "title": "Tarkista profiilisi",
+        "description": "Odotetaan profiilin tarvitsemia hintoja. Tallennettu profiili päivittyy, kun hinnat saapuvat hintalähteeseen.\n\nAvaa tallentamasi profiili ja tarkista signaali sekä aikataulu. Katso, [miten signaalia käytetään automaatiossa]({automation_guide_url}).",
+        "data": {
+          "edit": "Palaa asetuksiin"
+        }
+      },
+      "price_preview_price_ceiling": {
+        "title": "Tarkista profiilisi",
+        "description": "Hintakatto estää täyden käyntiajan. Voit säilyttää rajan tai muuttaa sitä.\n\nAvaa tallentamasi profiili ja tarkista signaali sekä aikataulu. Katso, [miten signaalia käytetään automaatiossa]({automation_guide_url}).",
+        "data": {
+          "edit": "Palaa asetuksiin"
+        }
+      },
+      "price_preview_deadline": {
+        "title": "Tarkista profiilisi",
+        "description": "Käyntiaika ei mahdu ennen määräaikaa. Kokeile aikaisempaa aloitusta, myöhäisempää loppuaikaa tai lyhyempää käyntiaikaa.\n\nAvaa tallentamasi profiili ja tarkista signaali sekä aikataulu. Katso, [miten signaalia käytetään automaatiossa]({automation_guide_url}).",
+        "data": {
+          "edit": "Palaa asetuksiin"
+        }
+      },
+      "price_preview_insufficient_duration": {
+        "title": "Tarkista profiilisi",
+        "description": "Pyydetylle käynnille ei ole riittävästi aikaa. Tarkista käyntiaika ja aikaikkuna.\n\nAvaa tallentamasi profiili ja tarkista signaali sekä aikataulu. Katso, [miten signaalia käytetään automaatiossa]({automation_guide_url}).",
+        "data": {
+          "edit": "Palaa asetuksiin"
+        }
+      },
+      "price_preview_constraints_unsatisfied": {
+        "title": "Tarkista profiilisi",
+        "description": "Nykyisillä hinnoilla kaikki ehdot eivät täyty yhtä aikaa. Tarkista hintakatto, käyntiaika ja määräaika.\n\nAvaa tallentamasi profiili ja tarkista signaali sekä aikataulu. Katso, [miten signaalia käytetään automaatiossa]({automation_guide_url}).",
+        "data": {
+          "edit": "Palaa asetuksiin"
+        }
+      },
+      "price_preview_no_eligible": {
+        "title": "Tarkista profiilisi",
+        "description": "Valittuun aikaikkunaan ei löytynyt sopivia hintajaksoja. Tarkista aloitus- ja lopetusajat.\n\nAvaa tallentamasi profiili ja tarkista signaali sekä aikataulu. Katso, [miten signaalia käytetään automaatiossa]({automation_guide_url}).",
+        "data": {
+          "edit": "Palaa asetuksiin"
+        }
+      },
+      "market_source": {
+        "title": "Valitse skenaario ja hintalähde",
+        "description": "Valitse, mihin käytät hintatietoa. Jos käytettävissä on vain yksi sähkön hintalähde, se on valittu valmiiksi. Tarkista ennen hintarajan asettamista, sisältävätkö hinnat verot ja maksut.",
+        "data": {
+          "scenario": "Mihin haluat käyttää hintatietoa?",
+          "currency": "Valuutta",
+          "unit_override": "Anturin käyttämä hinnan yksikkö",
+          "price_source": "Hintalähde",
+          "home_name": "Tibber-kodin nimi"
+        }
+      },
+      "market_reconfigure": {
+        "title": "Vaihda hintalähde",
+        "description": "Valitse korvaava lähde. Jos valuutta vaihtuu, syötä uusi raja.",
+        "data": {
+          "currency": "Valuutta",
+          "unit_override": "Anturin käyttämä hinnan yksikkö",
+          "min_price_diff_per_kwh": "Uusi vähimmäishintaero kilowattituntia kohti",
+          "threshold_price_per_kwh": "Halvan hinnan raja",
+          "price_ceiling_per_kwh": "Enimmäishinta",
+          "price_source": "Hintalähde",
+          "home_name": "Tibber-kodin nimi"
+        }
+      }
+    },
+    "error": {
+      "base": "Valittua lähdettä tai asetuksia ei voitu tarkistaa.",
+      "price_entity_id": "Valitse käytettävissä oleva Nordpool-anturi.",
+      "currency": "Valitse anturin käyttämä valuutta.",
+      "unit_override": "Valitse anturin käyttämä hinnan yksikkö.",
+      "min_price_diff_per_kwh": "Anna uusi kynnysarvo, koska lähteen valuutta vaihtui.",
+      "source_unavailable": "Valittu hintalähde ei ole käytettävissä tai sillä ei ole ajantasaista hintaa.",
+      "invalid_source_data": "Hintatietoja ei voitu lukea. Tarkista valitun hintalähteen hinnat, aikaleimat, valuutta ja hintayksikkö.",
+      "unit_override_required": "Hintayksikköä ei voitu tunnistaa. Valitse hintalähteen ilmoittama yksikkö.",
+      "currency_required": "Valitse hintalähteen käyttämä valuutta.",
+      "invalid_currency": "Valitse tuettu valuuttakoodi.",
+      "currency_mismatch": "Asetettu valuutta ei vastaa valittua anturia.",
+      "currency_changed_threshold_required": "Anna uuden valuutan mukainen kynnys ennen lähteen vaihtamista.",
+      "invalid_profile_name": "Anna profiilin nimi.",
+      "invalid_settings": "Yksi tai useampi optimointiasetus ei kelpaa.",
+      "invalid_max_cutoff": "Valitse kesto väliltä 30 minuuttia–6 tuntia 15 minuutin askelin.",
+      "invalid_max_periods": "Valitse 1–6 aikataulujaksoa.",
+      "invalid_min_price_diff": "Anna äärellinen, vähintään nollan suuruinen hintaero valittua valuuttaa kilowattituntia kohti.",
+      "invalid_preheat_factor": "Valitse esilämmityskerroin väliltä 1–3.",
+      "invalid_recovery_factor": "Valitse palautumiskerroin väliltä 1–3.",
+      "invalid_multiplier_mode": "Valitse käytettävissä oleva esilämmitysmalli.",
+      "temperature_sensor_required": "Valitse ulkolämpötila-anturi lämpötilaan mukautuville kertoimille.",
+      "invalid_temperature_sensor": "Valitse käytettävissä oleva numeerinen lämpötila-anturi, jonka yksikkö on °C, °F tai K.",
+      "invalid_window": "Valitse eri alku- ja loppuaika tai jätä valinnaiset ajat tyhjiksi.",
+      "invalid_schedule_duration": "Valitse käyntiajat 15 minuutin välein. Lyhin jakso voi olla enintään yhtä pitkä kuin käyntiaika yhteensä.",
+      "invalid_helper": "Valitse numeroapuri ja sen yksikkö.",
+      "invalid_price_value": "Anna kelvollinen hinta uudessa valuutassa.",
+      "currency_change_with_price_helper": "Tyhjennä profiilin asetuksissa Vähimmäishintaeron apuri -kenttä ennen valuutan vaihtamista.",
+      "tibber_home_required": "Tibberissä on useita aktiivisia koteja. Kirjoita kodin nimi kuten se näkyy Tibberissä.",
+      "tibber_home_not_found": "Tarkista Tibber-kodin nimi ja kirjoitusasu.",
+      "threshold_only_source": "Amber Electric toimii vain Halpa nyt -skenaariossa. Valitse Halpa nyt tai toinen hintalähde."
+    },
+    "abort": {
+      "reconfigure_successful": "Hintalähde päivitettiin.",
+      "invalid_scenario": "Valitse tuettu skenaario.",
+      "no_price_sources": "Lisää tuettu hintalähde Home Assistantiin ja yritä uudelleen."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Optimoinnin asetukset",
+        "description": "Hinnat ja kynnysarvot ovat yksikössä {currency}/kWh. Mallisäästö arvioidaan 1 kW:n vertailukuormalle.",
+        "data": {
+          "max_cutoff_minutes": "Katkaisun enimmäiskesto",
+          "min_price_diff_per_kwh": "Vähimmäishintaero kilowattituntia kohti",
+          "max_periods": "Jaksojen enimmäismäärä aikataulussa",
+          "multiplier_mode": "Esilämmityksen ja palautumisen malli",
+          "preheat_factor": "Kiinteä esilämmityskerroin",
+          "recovery_factor": "Kiinteä palautumiskerroin",
+          "temperature_entity_id": "Ulkolämpötila-anturi",
+          "max_cutoff_entity_id": "Enimmäiskeston apuri (valinnainen)",
+          "max_cutoff_entity_unit": "Keston apurin yksikkö",
+          "min_price_diff_entity_id": "Vähimmäishintaeron apuri (valinnainen)",
+          "min_price_diff_entity_unit": "Hintaeron apurin yksikkö"
+        }
+      },
+      "price_options": {
+        "title": "Hintaprofiilin asetukset",
+        "description": "Hintayksikkö on {currency}/kWh. Tyhjä viikonpäivävalinta sallii kaikki päivät. Yön yli jatkuvan jakson viikonpäivä määräytyy aloitusajan mukaan.",
+        "data": {
+          "threshold_price_per_kwh": "Halvan hinnan raja",
+          "required_duration_minutes": "Käyntiaika yhteensä",
+          "window_start": "Aikaisin aloitus",
+          "window_end": "Valmis viimeistään",
+          "weekdays": "Viikonpäivät",
+          "mode": "Käyntiajan suunnittelu",
+          "min_run_minutes": "Jaetun käyntijakson vähimmäiskesto",
+          "price_ceiling_per_kwh": "Enimmäishinta",
+          "fallback": "Jos hintaraja estää riittävän käyntiajan"
+        }
+      }
+    },
+    "error": {
+      "base": "Asetuksia ei voitu tarkistaa.",
+      "invalid_settings": "Yksi tai useampi optimointiasetus ei kelpaa.",
+      "invalid_max_cutoff": "Valitse kesto väliltä 30 minuuttia–6 tuntia 15 minuutin askelin.",
+      "invalid_max_periods": "Valitse 1–6 aikataulujaksoa.",
+      "invalid_min_price_diff": "Anna äärellinen, vähintään nollan suuruinen hintaero valittua valuuttaa kilowattituntia kohti.",
+      "invalid_preheat_factor": "Valitse esilämmityskerroin väliltä 1–3.",
+      "invalid_recovery_factor": "Valitse palautumiskerroin väliltä 1–3.",
+      "invalid_multiplier_mode": "Valitse käytettävissä oleva esilämmitysmalli.",
+      "temperature_sensor_required": "Valitse ulkolämpötila-anturi lämpötilaan mukautuville kertoimille.",
+      "invalid_temperature_sensor": "Valitse käytettävissä oleva numeerinen lämpötila-anturi, jonka yksikkö on °C tai °F.",
+      "invalid_window": "Valitse eri alku- ja loppuaika tai jätä valinnaiset ajat tyhjiksi.",
+      "invalid_schedule_duration": "Valitse käyntiajat 15 minuutin välein. Lyhin jakso voi olla enintään yhtä pitkä kuin käyntiaika yhteensä.",
+      "invalid_profile_name": "Anna profiilin nimi.",
+      "invalid_helper": "Valitse numeroapuri ja sen yksikkö.",
+      "invalid_price_value": "Anna kelvollinen hinta uudessa valuutassa.",
+      "currency_change_with_price_helper": "Tyhjennä profiilin asetuksissa Vähimmäishintaeron apuri -kenttä ennen valuutan vaihtamista."
+    }
+  },
+  "selector": {
+    "multiplier_mode": {
+      "options": {
+        "fixed": "Kiinteät kertoimet",
+        "outdoor_temperature": "Mukauta kertoimia ulkolämpötilan mukaan"
+      }
+    },
+    "scenario": {
+      "options": {
+        "heating": "Lämmitys ja lämpöpumppu",
+        "cheap_now": "Halpa nyt",
+        "water_heater": "Lämminvesivaraaja",
+        "appliance": "Kodinkoneen ohjelma",
+        "ev": "Auton lataus"
+      }
+    },
+    "duration_helper_unit": {
+      "options": {
+        "h": "Tuntia",
+        "min": "Minuuttia"
+      }
+    },
+    "price_helper_unit": {
+      "options": {
+        "currency_per_kwh": "Valuutta per kWh (esim. EUR/kWh)",
+        "subunit_per_kwh": "Valuutan sadasosa per kWh (esim. snt/kWh)"
+      }
+    },
+    "schedule_mode": {
+      "options": {
+        "cheapest_contiguous": "Yksi yhtenäinen käyntijakso",
+        "cheapest_split": "Jaa halvimpiin käyntijaksoihin"
+      }
+    },
+    "fallback": {
+      "options": {
+        "price": "Noudata hintarajaa",
+        "deadline": "Suosi riittävää käyntiaikaa"
+      }
+    },
+    "weekdays": {
+      "options": {
+        "mon": "Maanantai",
+        "tue": "Tiistai",
+        "wed": "Keskiviikko",
+        "thu": "Torstai",
+        "fri": "Perjantai",
+        "sat": "Lauantai",
+        "sun": "Sunnuntai"
+      }
+    }
+  },
+  "entity": {
+    "sensor": {
+      "phase": {
+        "name": "Katkaisuvaihe",
+        "state": {
+          "normal": "Normaali",
+          "preheat": "Esilämmitys",
+          "shutdown": "Katkaisu",
+          "recovery": "Palautuminen",
+          "unavailable": "Ei käytettävissä"
+        },
+        "state_attributes": {
+          "next_change": {
+            "name": "Seuraava tarkistus"
+          },
+          "locked": {
+            "name": "Jakso lukittu"
+          },
+          "locked_settings_known": {
+            "name": "Lukitun jakson asetukset tiedossa"
+          },
+          "locked_period": {
+            "name": "Lukittu jakso"
+          },
+          "locked_effective_settings": {
+            "name": "Lukitun jakson asetukset"
+          },
+          "decision_reason": {
+            "name": "Päätöksen syy",
+            "state": {
+              "source_unavailable": "Hintalähde ei ole käytettävissä",
+              "invalid_data": "Hintatietoja ei voitu käyttää",
+              "preheat": "Suunniteltu esilämmitys",
+              "shutdown": "Suunniteltu lämmityskatko",
+              "recovery": "Suunniteltu palautumisvaihe",
+              "waiting_for_prices": "Odotetaan lisää hintoja",
+              "next_cutoff_selected": "Seuraava katko on ajoitettu",
+              "no_cutoff_selected": "Sopivaa katkoa ei löytynyt"
+            }
+          },
+          "effective_settings": {
+            "name": "Voimassa olevat asetukset"
+          },
+          "warnings": {
+            "name": "Varoituskoodit"
+          }
+        }
+      },
+      "next_cutoff_start": {
+        "name": "Seuraava katkaisu alkaa"
+      },
+      "next_cutoff_end": {
+        "name": "Seuraava katkaisu päättyy"
+      },
+      "schedule": {
+        "name": "Katkaisuaikataulu",
+        "state_attributes": {
+          "currency": {
+            "name": "Valuutta"
+          },
+          "provider": {
+            "name": "Hintalähde"
+          },
+          "data_status": {
+            "name": "Hintadatan tila",
+            "state": {
+              "ready": "Valmis",
+              "waiting_for_prices": "Odottaa hintoja",
+              "no_profitable_periods": "Sopivia jaksoja ei löytynyt",
+              "source_unavailable": "Hintalähde ei ole käytettävissä",
+              "invalid_data": "Virheellinen hintadata"
+            }
+          },
+          "next_change": {
+            "name": "Seuraava tarkistus"
+          },
+          "locked": {
+            "name": "Jakso lukittu"
+          },
+          "locked_settings_known": {
+            "name": "Lukitun jakson asetukset tiedossa"
+          },
+          "locked_period": {
+            "name": "Lukittu jakso"
+          },
+          "effective_settings": {
+            "name": "Voimassa olevat asetukset"
+          },
+          "locked_effective_settings": {
+            "name": "Lukitun jakson asetukset"
+          },
+          "calculated_at": {
+            "name": "Viimeisin laskenta"
+          },
+          "last_success": {
+            "name": "Viimeisin onnistunut päivitys"
+          },
+          "warnings": {
+            "name": "Varoituskoodit"
+          }
+        }
+      },
+      "data_status": {
+        "name": "Hintadatan tila",
+        "state": {
+          "ready": "Valmis",
+          "waiting_for_prices": "Odottaa hintoja",
+          "no_profitable_periods": "Sopivia jaksoja ei löytynyt",
+          "source_unavailable": "Hintalähde ei ole käytettävissä",
+          "invalid_data": "Virheellinen hintadata"
+        },
+        "state_attributes": {
+          "available": {
+            "name": "Tietoja saatavilla"
+          },
+          "error_code": {
+            "name": "Virhekoodi"
+          },
+          "last_success": {
+            "name": "Viimeisin onnistunut päivitys"
+          },
+          "calculated_at": {
+            "name": "Viimeisin laskenta"
+          },
+          "warnings": {
+            "name": "Varoituskoodit"
+          }
+        }
+      },
+      "modeled_savings_per_kw": {
+        "name": "Mallinnettu säästö kilowattia kohti"
+      },
+      "current_price": {
+        "name": "Nykyinen hinta",
+        "state_attributes": {
+          "reason_code": {
+            "name": "Päätöksen syy",
+            "state": {
+              "no_eligible_prices": "Valitulle aikaikkunalle ei ole hintoja.",
+              "price_at_or_below_limit": "Nykyinen hinta on enintään asettamasi raja.",
+              "no_qualifying_price_now": "Juuri nyt ei ole sopivaa hintajaksoa.",
+              "no_applicable_window": "Sopivaa päivittäistä aikaikkunaa ei löytynyt.",
+              "waiting_for_window_prices": "Odotetaan koko aikaikkunan hintoja.",
+              "no_full_interval_in_window": "Aikaikkunaan ei mahdu yhtään kokonaista hintajaksoa.",
+              "no_future_prices": "Tulevia hintoja ei ole vielä saatavilla.",
+              "price_ceiling_relaxed": "Suunnitelma ylittää hintakaton, jotta käynti ehtii valmistua määräaikaan.",
+              "deadline_relaxed": "Suunnitelma noudattaa hintakattoa ja käynti jatkuu määräajan jälkeen.",
+              "constraints_unsatisfied": "Hintakattoa ja määräaikaa ei voi noudattaa samalla suunnitelmalla.",
+              "price_ceiling": "Hintakatto estää pyydetyn käyntiajan.",
+              "deadline": "Käyntiaika ei mahdu ennen määräaikaa.",
+              "insufficient_duration": "Sopivaa aikaa ei ole riittävästi pyydetylle käynnille.",
+              "cheapest_intervals_selected": "Sopivista jaksoista valittiin halvimmat.",
+              "waiting_for_current_price": "Odotetaan nykyisen jakson hintaa.",
+              "above_threshold": "Nykyinen hinta ylittää asettamasi rajan.",
+              "outside_allowed_window": "Hinta on enintään asettamasi raja. Sallittu aikaikkuna ei ole nyt käynnissä.",
+              "schedule_locked": "Valittu aikataulu säilyy suunniteltuun loppuun asti.",
+              "source_unavailable": "Valittu hintalähde ei ole käytettävissä.",
+              "invalid_data": "Hintalähde palautti virheellisiä tai puutteellisia tietoja."
+            }
+          },
+          "status": {
+            "name": "Tila",
+            "state": {
+              "active": "Aktiivinen",
+              "scheduled": "Ajastettu",
+              "no_prices": "Odotetaan hintatietoja",
+              "no_window": "Sallitun aikaikkunan ulkopuolella",
+              "price_ceiling": "Hintaraja estää aikataulun",
+              "insufficient_duration": "Käyntiaika ei mahdu aikaikkunaan",
+              "source_unavailable": "Hintalähde ei ole käytettävissä",
+              "invalid_data": "Virheelliset hintatiedot",
+              "above_threshold": "Hinta ylittää rajan",
+              "waiting_for_prices": "Odotetaan hintoja",
+              "deadline": "Käynti ei mahdu ennen määräaikaa",
+              "constraints_unsatisfied": "Asetuksia vastaavaa aikataulua ei löytynyt",
+              "completed": "Tämän aikaikkunan käynti valmis"
+            }
+          },
+          "active": {
+            "name": "Signaali aktiivinen"
+          },
+          "current_price": {
+            "name": "Nykyinen hinta"
+          },
+          "currency": {
+            "name": "Valuutta"
+          },
+          "threshold_price_per_kwh": {
+            "name": "Hintaraja"
+          },
+          "threshold_comparison": {
+            "name": "Hinnan vertailu rajaan",
+            "state": {
+              "at_or_below": "Enintään hintarajan verran",
+              "above": "Hintarajan yläpuolella"
+            }
+          },
+          "window_start": {
+            "name": "Aikaikkuna alkaa"
+          },
+          "window_end": {
+            "name": "Aikaikkuna päättyy"
+          },
+          "provider": {
+            "name": "Hintalähde"
+          },
+          "calculated_at": {
+            "name": "Viimeisin laskenta"
+          },
+          "last_success": {
+            "name": "Viimeisin onnistunut päivitys"
+          }
+        }
+      },
+      "price_schedule": {
+        "name": "Käyntiaikataulu",
+        "state_attributes": {
+          "reason_code": {
+            "name": "Päätöksen syy",
+            "state": {
+              "no_eligible_prices": "Valitulle aikaikkunalle ei ole hintoja.",
+              "price_at_or_below_limit": "Nykyinen hinta on enintään asettamasi raja.",
+              "no_qualifying_price_now": "Juuri nyt ei ole sopivaa hintajaksoa.",
+              "no_applicable_window": "Sopivaa päivittäistä aikaikkunaa ei löytynyt.",
+              "waiting_for_window_prices": "Odotetaan koko aikaikkunan hintoja.",
+              "no_full_interval_in_window": "Aikaikkunaan ei mahdu yhtään kokonaista hintajaksoa.",
+              "no_future_prices": "Tulevia hintoja ei ole vielä saatavilla.",
+              "price_ceiling_relaxed": "Suunnitelma ylittää hintakaton, jotta käynti ehtii valmistua määräaikaan.",
+              "deadline_relaxed": "Suunnitelma noudattaa hintakattoa ja käynti jatkuu määräajan jälkeen.",
+              "constraints_unsatisfied": "Hintakattoa ja määräaikaa ei voi noudattaa samalla suunnitelmalla.",
+              "price_ceiling": "Hintakatto estää pyydetyn käyntiajan.",
+              "deadline": "Käyntiaika ei mahdu ennen määräaikaa.",
+              "insufficient_duration": "Sopivaa aikaa ei ole riittävästi pyydetylle käynnille.",
+              "cheapest_intervals_selected": "Sopivista jaksoista valittiin halvimmat.",
+              "waiting_for_current_price": "Odotetaan nykyisen jakson hintaa.",
+              "above_threshold": "Nykyinen hinta ylittää asettamasi rajan.",
+              "outside_allowed_window": "Hinta on enintään asettamasi raja. Sallittu aikaikkuna ei ole nyt käynnissä.",
+              "schedule_locked": "Valittu aikataulu säilyy suunniteltuun loppuun asti.",
+              "source_unavailable": "Valittu hintalähde ei ole käytettävissä.",
+              "invalid_data": "Hintalähde palautti virheellisiä tai puutteellisia tietoja."
+            }
+          },
+          "status": {
+            "name": "Tila",
+            "state": {
+              "active": "Aktiivinen",
+              "scheduled": "Ajastettu",
+              "no_prices": "Odotetaan hintatietoja",
+              "no_window": "Sallitun aikaikkunan ulkopuolella",
+              "price_ceiling": "Hintaraja estää aikataulun",
+              "insufficient_duration": "Käyntiaika ei mahdu aikaikkunaan",
+              "source_unavailable": "Hintalähde ei ole käytettävissä",
+              "invalid_data": "Virheelliset hintatiedot",
+              "above_threshold": "Hinta ylittää rajan",
+              "waiting_for_prices": "Odotetaan hintoja",
+              "deadline": "Käynti ei mahdu ennen määräaikaa",
+              "constraints_unsatisfied": "Asetuksia vastaavaa aikataulua ei löytynyt",
+              "completed": "Tämän aikaikkunan käynti valmis"
+            }
+          },
+          "error_code": {
+            "name": "Virhekoodi"
+          },
+          "current_price": {
+            "name": "Nykyinen hinta"
+          },
+          "currency": {
+            "name": "Valuutta"
+          },
+          "threshold_price_per_kwh": {
+            "name": "Hintaraja"
+          },
+          "threshold_comparison": {
+            "name": "Hinnan vertailu rajaan",
+            "state": {
+              "at_or_below": "Enintään hintarajan verran",
+              "above": "Hintarajan yläpuolella"
+            }
+          },
+          "next_change": {
+            "name": "Seuraava tarkistus"
+          },
+          "next_period_start": {
+            "name": "Seuraava käynti alkaa"
+          },
+          "next_period_end": {
+            "name": "Seuraava käynti päättyy"
+          },
+          "active_period_end": {
+            "name": "Nykyinen käynti päättyy"
+          },
+          "mode": {
+            "name": "Ajastustapa",
+            "state": {
+              "threshold": "Hintaraja",
+              "cheapest_contiguous": "Yksi yhtenäinen käyntijakso",
+              "cheapest_split": "Jaa halvimpiin käyntijaksoihin"
+            }
+          },
+          "window_start": {
+            "name": "Aikaikkuna alkaa"
+          },
+          "window_end": {
+            "name": "Aikaikkuna päättyy"
+          },
+          "weekdays": {
+            "name": "Viikonpäivät"
+          },
+          "required_duration_minutes": {
+            "name": "Pyydetty käyntiaika (min)"
+          },
+          "min_run_minutes": {
+            "name": "Lyhin käynti (min)"
+          },
+          "price_ceiling_per_kwh": {
+            "name": "Hintakatto"
+          },
+          "fallback": {
+            "name": "Varaehdon prioriteetti",
+            "state": {
+              "price": "Noudata hintarajaa",
+              "deadline": "Suosi riittävää käyntiaikaa"
+            }
+          },
+          "deadline": {
+            "name": "Määräaika"
+          },
+          "provider": {
+            "name": "Hintalähde"
+          },
+          "calculated_at": {
+            "name": "Viimeisin laskenta"
+          },
+          "last_success": {
+            "name": "Viimeisin onnistunut päivitys"
+          },
+          "selected_run_count": {
+            "name": "Valitut käynnit"
+          },
+          "selected_periods": {
+            "name": "Valitut jaksot"
+          },
+          "occurrence_end": {
+            "name": "Aikataulun aikaikkuna päättyy"
+          },
+          "available": {
+            "name": "Tietoja saatavilla"
+          },
+          "active": {
+            "name": "Signaali aktiivinen"
+          },
+          "warnings": {
+            "name": "Varoituskoodit"
+          }
+        }
+      },
+      "price_data_status": {
+        "name": "Aikataulun tila",
+        "state": {
+          "active": "Aktiivinen",
+          "scheduled": "Ajastettu",
+          "no_prices": "Odotetaan hintatietoja",
+          "no_window": "Sallitun aikaikkunan ulkopuolella",
+          "price_ceiling": "Hintaraja estää aikataulun",
+          "insufficient_duration": "Käyntiaika ei mahdu aikaikkunaan",
+          "source_unavailable": "Hintalähde ei ole käytettävissä",
+          "invalid_data": "Virheelliset hintatiedot",
+          "above_threshold": "Hinta ylittää rajan",
+          "waiting_for_prices": "Odotetaan hintoja",
+          "deadline": "Käynti ei mahdu ennen määräaikaa",
+          "constraints_unsatisfied": "Asetuksia vastaavaa aikataulua ei löytynyt",
+          "completed": "Tämän aikaikkunan käynti valmis"
+        },
+        "state_attributes": {
+          "available": {
+            "name": "Tietoja saatavilla"
+          },
+          "status": {
+            "name": "Tila",
+            "state": {
+              "active": "Aktiivinen",
+              "scheduled": "Ajastettu",
+              "no_prices": "Odotetaan hintatietoja",
+              "no_window": "Sallitun aikaikkunan ulkopuolella",
+              "price_ceiling": "Hintaraja estää aikataulun",
+              "insufficient_duration": "Käyntiaika ei mahdu aikaikkunaan",
+              "source_unavailable": "Hintalähde ei ole käytettävissä",
+              "invalid_data": "Virheelliset hintatiedot",
+              "above_threshold": "Hinta ylittää rajan",
+              "waiting_for_prices": "Odotetaan hintoja",
+              "deadline": "Käynti ei mahdu ennen määräaikaa",
+              "constraints_unsatisfied": "Asetuksia vastaavaa aikataulua ei löytynyt",
+              "completed": "Tämän aikaikkunan käynti valmis"
+            }
+          },
+          "active": {
+            "name": "Signaali aktiivinen"
+          },
+          "reason_code": {
+            "name": "Päätöksen syy",
+            "state": {
+              "no_eligible_prices": "Valitulle aikaikkunalle ei ole hintoja.",
+              "price_at_or_below_limit": "Nykyinen hinta on enintään asettamasi raja.",
+              "no_qualifying_price_now": "Juuri nyt ei ole sopivaa hintajaksoa.",
+              "no_applicable_window": "Sopivaa päivittäistä aikaikkunaa ei löytynyt.",
+              "waiting_for_window_prices": "Odotetaan koko aikaikkunan hintoja.",
+              "no_full_interval_in_window": "Aikaikkunaan ei mahdu yhtään kokonaista hintajaksoa.",
+              "no_future_prices": "Tulevia hintoja ei ole vielä saatavilla.",
+              "price_ceiling_relaxed": "Suunnitelma ylittää hintakaton, jotta käynti ehtii valmistua määräaikaan.",
+              "deadline_relaxed": "Suunnitelma noudattaa hintakattoa ja käynti jatkuu määräajan jälkeen.",
+              "constraints_unsatisfied": "Hintakattoa ja määräaikaa ei voi noudattaa samalla suunnitelmalla.",
+              "price_ceiling": "Hintakatto estää pyydetyn käyntiajan.",
+              "deadline": "Käyntiaika ei mahdu ennen määräaikaa.",
+              "insufficient_duration": "Sopivaa aikaa ei ole riittävästi pyydetylle käynnille.",
+              "cheapest_intervals_selected": "Sopivista jaksoista valittiin halvimmat.",
+              "waiting_for_current_price": "Odotetaan nykyisen jakson hintaa.",
+              "above_threshold": "Nykyinen hinta ylittää asettamasi rajan.",
+              "outside_allowed_window": "Hinta on enintään asettamasi raja. Sallittu aikaikkuna ei ole nyt käynnissä.",
+              "schedule_locked": "Valittu aikataulu säilyy suunniteltuun loppuun asti.",
+              "source_unavailable": "Valittu hintalähde ei ole käytettävissä.",
+              "invalid_data": "Hintalähde palautti virheellisiä tai puutteellisia tietoja."
+            }
+          },
+          "error_code": {
+            "name": "Virhekoodi"
+          },
+          "current_price": {
+            "name": "Nykyinen hinta"
+          },
+          "currency": {
+            "name": "Valuutta"
+          },
+          "threshold_price_per_kwh": {
+            "name": "Hintaraja"
+          },
+          "threshold_comparison": {
+            "name": "Hinnan vertailu rajaan",
+            "state": {
+              "at_or_below": "Enintään hintarajan verran",
+              "above": "Hintarajan yläpuolella"
+            }
+          },
+          "mode": {
+            "name": "Ajastustapa",
+            "state": {
+              "threshold": "Hintaraja",
+              "cheapest_contiguous": "Yksi yhtenäinen käyntijakso",
+              "cheapest_split": "Jaa halvimpiin käyntijaksoihin"
+            }
+          },
+          "window_start": {
+            "name": "Aikaikkuna alkaa"
+          },
+          "window_end": {
+            "name": "Aikaikkuna päättyy"
+          },
+          "weekdays": {
+            "name": "Viikonpäivät"
+          },
+          "required_duration_minutes": {
+            "name": "Pyydetty käyntiaika (min)"
+          },
+          "min_run_minutes": {
+            "name": "Lyhin käynti (min)"
+          },
+          "price_ceiling_per_kwh": {
+            "name": "Hintakatto"
+          },
+          "fallback": {
+            "name": "Varaehdon prioriteetti",
+            "state": {
+              "price": "Noudata hintarajaa",
+              "deadline": "Suosi riittävää käyntiaikaa"
+            }
+          },
+          "deadline": {
+            "name": "Määräaika"
+          },
+          "provider": {
+            "name": "Hintalähde"
+          },
+          "next_change": {
+            "name": "Seuraava tarkistus"
+          },
+          "calculated_at": {
+            "name": "Viimeisin laskenta"
+          },
+          "last_success": {
+            "name": "Viimeisin onnistunut päivitys"
+          }
+        }
+      },
+      "next_price_start": {
+        "name": "Seuraava käynti alkaa"
+      },
+      "next_price_end": {
+        "name": "Seuraava käynti päättyy"
+      },
+      "decision_reason": {
+        "name": "Katkopäätös",
+        "state": {
+          "source_unavailable": "Hintalähde ei ole käytettävissä",
+          "invalid_data": "Hintatietoja ei voitu käyttää",
+          "preheat": "Suunniteltu esilämmitys",
+          "shutdown": "Suunniteltu lämmityskatko",
+          "recovery": "Suunniteltu palautumisvaihe",
+          "waiting_for_prices": "Odotetaan lisää hintoja",
+          "next_cutoff_selected": "Seuraava katko on ajoitettu",
+          "no_cutoff_selected": "Sopivaa katkoa ei löytynyt"
+        },
+        "state_attributes": {
+          "data_status": {
+            "name": "Hintadatan tila",
+            "state": {
+              "ready": "Valmis",
+              "waiting_for_prices": "Odottaa hintoja",
+              "no_profitable_periods": "Sopivia jaksoja ei löytynyt",
+              "source_unavailable": "Hintalähde ei ole käytettävissä",
+              "invalid_data": "Virheellinen hintadata"
+            }
+          },
+          "next_change": {
+            "name": "Seuraava tarkistus"
+          },
+          "locked": {
+            "name": "Jakso lukittu"
+          },
+          "locked_settings_known": {
+            "name": "Lukitun jakson asetukset tiedossa"
+          },
+          "effective_settings": {
+            "name": "Voimassa olevat asetukset"
+          },
+          "locked_effective_settings": {
+            "name": "Lukitun jakson asetukset"
+          },
+          "warnings": {
+            "name": "Varoituskoodit"
+          }
+        }
+      }
+    },
+    "binary_sensor": {
+      "cutoff_active": {
+        "name": "Katkaisu aktiivinen",
+        "state": {
+          "on": "Aktiivinen",
+          "off": "Ei aktiivinen"
+        }
+      },
+      "price_active": {
+        "name": "Käytä sähköä nyt"
+      }
+    }
+  },
+  "common": {
+    "profile_name_heating": "Pörssisähkön lämmitysohjaus",
+    "profile_name_cheap_now": "Halpa sähkö",
+    "profile_name_water_heater": "Lämminvesivaraaja",
+    "profile_name_appliance": "Kodinkoneen ohjelma",
+    "profile_name_ev": "Auton lataus"
+  }
+}

@@ -1,0 +1,878 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Choose a scenario and price source",
+        "description": "Choose what to optimize. If there is only one available electricity price source, it is preselected.",
+        "data": {
+          "scenario": "What do you want to use the price for?",
+          "price_entity_id": "Nordpool price sensor",
+          "currency": "Currency",
+          "unit_override": "Price unit used by the sensor"
+        }
+      },
+      "settings": {
+        "title": "Set up your schedule",
+        "description": "Prices are compared in {currency}/kWh. The minimum price difference is in the selected currency per kWh. Savings are a model for a 1 kW reference load, not a bill guarantee.",
+        "data": {
+          "profile_name": "Profile name",
+          "max_cutoff_minutes": "Maximum cutoff duration",
+          "min_price_diff_per_kwh": "Minimum price difference per kWh",
+          "max_periods": "Maximum schedules per horizon",
+          "multiplier_mode": "Preheat and recovery model",
+          "preheat_factor": "Fixed preheat factor",
+          "recovery_factor": "Fixed recovery factor",
+          "temperature_entity_id": "Outdoor temperature sensor"
+        }
+      },
+      "reconfigure": {
+        "title": "Change the Nordpool price source",
+        "description": "Choose and validate a replacement sensor. If its currency changes, enter a new threshold in that currency; no exchange rate is applied.",
+        "data": {
+          "price_entity_id": "Nordpool price sensor",
+          "currency": "Currency",
+          "unit_override": "Price unit used by the sensor",
+          "min_price_diff_per_kwh": "New minimum price difference per kWh",
+          "threshold_price_per_kwh": "Cheap price limit",
+          "price_ceiling_per_kwh": "Maximum price"
+        }
+      },
+      "price_setup": {
+        "title": "Set up your price profile",
+        "description": "Prices use {currency}/kWh. For euros, enter 0.05 for 5 cents/kWh. If you set a window across midnight, use an end time earlier than the start.",
+        "data": {
+          "profile_name": "Profile name",
+          "threshold_price_per_kwh": "Cheap price limit",
+          "required_duration_minutes": "Total running time",
+          "window_start": "Earliest start",
+          "window_end": "Finish by",
+          "weekdays": "Days of the week",
+          "mode": "How to schedule running time",
+          "min_run_minutes": "Shortest run when splitting",
+          "price_ceiling_per_kwh": "Maximum price",
+          "fallback": "If the price limit prevents enough running time"
+        }
+      },
+      "price_preview_empty": {
+        "title": "Review your profile",
+        "description": "No run was selected for the current prices and settings. Check your settings or save and see the profile's current status.\n\nAfter saving, open the profile to check its signal and schedule. See [how to use the signal in an automation]({automation_guide_url}).",
+        "data": {
+          "edit": "Back to settings"
+        }
+      },
+      "price_preview_unavailable": {
+        "title": "Review your profile",
+        "description": "The preview is unavailable. Check whether the selected price source has current prices.\n\nAfter saving, open the profile to check its signal and schedule. See [how to use the signal in an automation]({automation_guide_url}).",
+        "data": {
+          "edit": "Back to settings"
+        }
+      },
+      "price_preview_threshold_active": {
+        "title": "Review your profile",
+        "description": "Price now: {current_price} {currency}/kWh. Your limit: {threshold} {currency}/kWh. **Use electricity now** would be on.\n\nAfter saving, open the profile to check its signal and schedule. See [how to use the signal in an automation]({automation_guide_url}).",
+        "data": {
+          "edit": "Back to settings"
+        }
+      },
+      "price_preview_threshold_scheduled": {
+        "title": "Review your profile",
+        "description": "The signal is off now. The next price at or below your limit of {threshold} {currency}/kWh starts at {next_start} (Home Assistant local time).\n\nAfter saving, open the profile to check its signal and schedule. See [how to use the signal in an automation]({automation_guide_url}).",
+        "data": {
+          "edit": "Back to settings"
+        }
+      },
+      "price_preview_threshold_above": {
+        "title": "Review your profile",
+        "description": "Price now: {current_price} {currency}/kWh. That exceeds your limit of {threshold} {currency}/kWh. The signal would be off.\n\nAfter saving, open the profile to check its signal and schedule. See [how to use the signal in an automation]({automation_guide_url}).",
+        "data": {
+          "edit": "Back to settings"
+        }
+      },
+      "price_preview_schedule_active": {
+        "title": "Review your profile",
+        "description": "The first run is due now: {start} – {end}. Planned running time: {planned_duration} minutes.\n\nAfter saving, open the profile to check its signal and schedule. See [how to use the signal in an automation]({automation_guide_url}).",
+        "data": {
+          "edit": "Back to settings"
+        }
+      },
+      "price_preview_schedule_scheduled": {
+        "title": "Review your profile",
+        "description": "First run: {start} – {end}, in Home Assistant local time. The schedule has {planned_duration} of the requested {required_duration} minutes.\n\nAfter saving, open the profile to check its signal and schedule. See [how to use the signal in an automation]({automation_guide_url}).",
+        "data": {
+          "edit": "Back to settings"
+        }
+      },
+      "price_preview_waiting": {
+        "title": "Review your profile",
+        "description": "Waiting for the prices needed for this profile. After saving, the profile updates when the source provides those prices.\n\nAfter saving, open the profile to check its signal and schedule. See [how to use the signal in an automation]({automation_guide_url}).",
+        "data": {
+          "edit": "Back to settings"
+        }
+      },
+      "price_preview_price_ceiling": {
+        "title": "Review your profile",
+        "description": "The price ceiling prevents a complete schedule. You can keep the limit or change it.\n\nAfter saving, open the profile to check its signal and schedule. See [how to use the signal in an automation]({automation_guide_url}).",
+        "data": {
+          "edit": "Back to settings"
+        }
+      },
+      "price_preview_deadline": {
+        "title": "Review your profile",
+        "description": "The required running time does not fit before the deadline. Try an earlier start, later finish, or shorter run.\n\nAfter saving, open the profile to check its signal and schedule. See [how to use the signal in an automation]({automation_guide_url}).",
+        "data": {
+          "edit": "Back to settings"
+        }
+      },
+      "price_preview_insufficient_duration": {
+        "title": "Review your profile",
+        "description": "There is not enough eligible time for the requested run. Check the running time and window.\n\nAfter saving, open the profile to check its signal and schedule. See [how to use the signal in an automation]({automation_guide_url}).",
+        "data": {
+          "edit": "Back to settings"
+        }
+      },
+      "price_preview_constraints_unsatisfied": {
+        "title": "Review your profile",
+        "description": "The current prices cannot satisfy all of your settings at once. Check the price ceiling, running time, and deadline.\n\nAfter saving, open the profile to check its signal and schedule. See [how to use the signal in an automation]({automation_guide_url}).",
+        "data": {
+          "edit": "Back to settings"
+        }
+      },
+      "price_preview_no_eligible": {
+        "title": "Review your profile",
+        "description": "No priced intervals match the selected window. Check the start and finish times.\n\nAfter saving, open the profile to check its signal and schedule. See [how to use the signal in an automation]({automation_guide_url}).",
+        "data": {
+          "edit": "Back to settings"
+        }
+      },
+      "market_source": {
+        "title": "Choose a scenario and price source",
+        "description": "Choose what to optimize. If there is only one available electricity price source, it is preselected. Check whether the source includes taxes and fees before setting a price limit.",
+        "data": {
+          "scenario": "What do you want to use the price for?",
+          "currency": "Currency",
+          "unit_override": "Price unit used by the sensor",
+          "price_source": "Price source",
+          "home_name": "Tibber home name"
+        }
+      },
+      "market_reconfigure": {
+        "title": "Change price source",
+        "description": "Select and validate a replacement source. Enter a new threshold if the currency changes.",
+        "data": {
+          "currency": "Currency",
+          "unit_override": "Price unit used by the sensor",
+          "min_price_diff_per_kwh": "New minimum price difference per kWh",
+          "threshold_price_per_kwh": "Cheap price limit",
+          "price_ceiling_per_kwh": "Maximum price",
+          "price_source": "Price source",
+          "home_name": "Tibber home name"
+        }
+      }
+    },
+    "error": {
+      "base": "The selected source or settings could not be validated.",
+      "price_entity_id": "Select an available Nordpool sensor.",
+      "currency": "Select the currency used by this sensor.",
+      "unit_override": "Choose the price unit used by the sensor.",
+      "min_price_diff_per_kwh": "Enter a new threshold because the source currency changed.",
+      "source_unavailable": "The selected price source is unavailable or has no current data.",
+      "invalid_source_data": "Price data could not be read. Open the selected price source and check its prices, timestamps, currency, and unit.",
+      "unit_override_required": "The price unit could not be identified. Select the unit reported by the source.",
+      "currency_required": "Select the currency used by the source prices.",
+      "invalid_currency": "Choose a supported currency code.",
+      "currency_mismatch": "The configured currency does not match the selected sensor.",
+      "currency_changed_threshold_required": "Enter a new price threshold in the new currency before changing the source.",
+      "invalid_profile_name": "Enter a profile name.",
+      "invalid_settings": "One or more optimizer settings are invalid.",
+      "invalid_max_cutoff": "Choose a duration from 30 minutes to 6 hours in 15-minute steps.",
+      "invalid_max_periods": "Choose between 1 and 6 schedules.",
+      "invalid_min_price_diff": "Enter a finite, non-negative price difference in the selected currency per kWh.",
+      "invalid_preheat_factor": "Choose a preheat factor from 1 to 3.",
+      "invalid_recovery_factor": "Choose a recovery factor from 1 to 3.",
+      "invalid_multiplier_mode": "Choose one of the available preheat models.",
+      "temperature_sensor_required": "Choose an outdoor temperature sensor for temperature-adaptive factors.",
+      "invalid_temperature_sensor": "Choose an available numeric temperature sensor in °C, °F, or K.",
+      "invalid_window": "Choose different start and end times, or leave both empty if optional.",
+      "invalid_schedule_duration": "Choose running times in 15-minute steps. The shortest run cannot exceed the total running time.",
+      "invalid_helper": "Choose a number helper and its unit.",
+      "invalid_price_value": "Enter a valid price in the new currency.",
+      "currency_change_with_price_helper": "In the profile options, clear the Minimum price difference helper field before changing currency.",
+      "tibber_home_required": "There is more than one active Tibber home. Enter the home name as shown in Tibber.",
+      "tibber_home_not_found": "Check the Tibber home name, including its spelling.",
+      "threshold_only_source": "Amber Electric works with Cheap now only. Choose Cheap now or select another price source."
+    },
+    "abort": {
+      "reconfigure_successful": "The price source was updated.",
+      "invalid_scenario": "Choose a supported scenario.",
+      "no_price_sources": "Set up a supported price source in Home Assistant and try again."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Optimizer settings",
+        "description": "Prices and thresholds use {currency}/kWh. A model saving is estimated for a 1 kW reference load.",
+        "data": {
+          "max_cutoff_minutes": "Maximum cutoff duration",
+          "min_price_diff_per_kwh": "Minimum price difference per kWh",
+          "max_periods": "Maximum schedules per horizon",
+          "multiplier_mode": "Preheat and recovery model",
+          "preheat_factor": "Fixed preheat factor",
+          "recovery_factor": "Fixed recovery factor",
+          "temperature_entity_id": "Outdoor temperature sensor",
+          "max_cutoff_entity_id": "Maximum duration helper (optional)",
+          "max_cutoff_entity_unit": "Duration helper unit",
+          "min_price_diff_entity_id": "Minimum price difference helper (optional)",
+          "min_price_diff_entity_unit": "Price difference helper unit"
+        }
+      },
+      "price_options": {
+        "title": "Price profile settings",
+        "description": "Price unit: {currency}/kWh. Leave weekdays empty to use every day. For overnight schedules, weekdays refer to the start of the window.",
+        "data": {
+          "threshold_price_per_kwh": "Cheap price limit",
+          "required_duration_minutes": "Total running time",
+          "window_start": "Earliest start",
+          "window_end": "Finish by",
+          "weekdays": "Days of the week",
+          "mode": "How to schedule running time",
+          "min_run_minutes": "Shortest run when splitting",
+          "price_ceiling_per_kwh": "Maximum price",
+          "fallback": "If the price limit prevents enough running time"
+        }
+      }
+    },
+    "error": {
+      "base": "The settings could not be validated.",
+      "invalid_settings": "One or more optimizer settings are invalid.",
+      "invalid_max_cutoff": "Choose a duration from 30 minutes to 6 hours in 15-minute steps.",
+      "invalid_max_periods": "Choose between 1 and 6 schedules.",
+      "invalid_min_price_diff": "Enter a finite, non-negative price difference in the selected currency per kWh.",
+      "invalid_preheat_factor": "Choose a preheat factor from 1 to 3.",
+      "invalid_recovery_factor": "Choose a recovery factor from 1 to 3.",
+      "invalid_multiplier_mode": "Choose one of the available preheat models.",
+      "temperature_sensor_required": "Choose an outdoor temperature sensor for temperature-adaptive factors.",
+      "invalid_temperature_sensor": "Choose an available numeric temperature sensor in °C, °F, or K.",
+      "invalid_window": "Choose different start and end times, or leave both empty if optional.",
+      "invalid_schedule_duration": "Choose running times in 15-minute steps. The shortest run cannot exceed the total running time.",
+      "invalid_profile_name": "Enter a profile name.",
+      "invalid_helper": "Choose a number helper and its unit.",
+      "invalid_price_value": "Enter a valid price in the new currency.",
+      "currency_change_with_price_helper": "In the profile options, clear the Minimum price difference helper field before changing currency."
+    }
+  },
+  "selector": {
+    "multiplier_mode": {
+      "options": {
+        "fixed": "Fixed factors",
+        "outdoor_temperature": "Adapt factors to outdoor temperature"
+      }
+    },
+    "scenario": {
+      "options": {
+        "heating": "Heating and heat pump",
+        "cheap_now": "Cheap now",
+        "water_heater": "Water heater",
+        "appliance": "Appliance cycle",
+        "ev": "EV charging"
+      }
+    },
+    "duration_helper_unit": {
+      "options": {
+        "h": "Hours",
+        "min": "Minutes"
+      }
+    },
+    "price_helper_unit": {
+      "options": {
+        "currency_per_kwh": "Currency per kWh (e.g. EUR/kWh)",
+        "subunit_per_kwh": "Minor units per kWh (e.g. cents/kWh)"
+      }
+    },
+    "schedule_mode": {
+      "options": {
+        "cheapest_contiguous": "One uninterrupted run",
+        "cheapest_split": "Split into cheaper runs"
+      }
+    },
+    "fallback": {
+      "options": {
+        "price": "Keep the price limit",
+        "deadline": "Prefer enough running time"
+      }
+    },
+    "weekdays": {
+      "options": {
+        "mon": "Monday",
+        "tue": "Tuesday",
+        "wed": "Wednesday",
+        "thu": "Thursday",
+        "fri": "Friday",
+        "sat": "Saturday",
+        "sun": "Sunday"
+      }
+    }
+  },
+  "entity": {
+    "sensor": {
+      "phase": {
+        "name": "Cutoff phase",
+        "state": {
+          "normal": "Normal",
+          "preheat": "Preheat",
+          "shutdown": "Cutoff",
+          "recovery": "Recovery",
+          "unavailable": "Unavailable"
+        },
+        "state_attributes": {
+          "next_change": {
+            "name": "Next evaluation"
+          },
+          "locked": {
+            "name": "Period locked"
+          },
+          "locked_settings_known": {
+            "name": "Locked settings known"
+          },
+          "locked_period": {
+            "name": "Locked period"
+          },
+          "locked_effective_settings": {
+            "name": "Settings used for the locked period"
+          },
+          "decision_reason": {
+            "name": "Decision reason",
+            "state": {
+              "source_unavailable": "Price source unavailable",
+              "invalid_data": "Price data could not be used",
+              "preheat": "Scheduled preheating",
+              "shutdown": "Scheduled cutoff",
+              "recovery": "Scheduled recovery",
+              "waiting_for_prices": "Waiting for more prices",
+              "next_cutoff_selected": "Next cutoff scheduled",
+              "no_cutoff_selected": "No suitable cutoff"
+            }
+          },
+          "effective_settings": {
+            "name": "Effective settings"
+          },
+          "warnings": {
+            "name": "Warning codes"
+          }
+        }
+      },
+      "next_cutoff_start": {
+        "name": "Next cutoff starts"
+      },
+      "next_cutoff_end": {
+        "name": "Next cutoff ends"
+      },
+      "schedule": {
+        "name": "Cutoff schedule",
+        "state_attributes": {
+          "currency": {
+            "name": "Currency"
+          },
+          "provider": {
+            "name": "Price source"
+          },
+          "data_status": {
+            "name": "Price data status",
+            "state": {
+              "ready": "Ready",
+              "waiting_for_prices": "Waiting for prices",
+              "no_profitable_periods": "No suitable periods",
+              "source_unavailable": "Price source unavailable",
+              "invalid_data": "Invalid price data"
+            }
+          },
+          "next_change": {
+            "name": "Next evaluation"
+          },
+          "locked": {
+            "name": "Period locked"
+          },
+          "locked_settings_known": {
+            "name": "Locked settings known"
+          },
+          "locked_period": {
+            "name": "Locked period"
+          },
+          "effective_settings": {
+            "name": "Effective settings"
+          },
+          "locked_effective_settings": {
+            "name": "Settings used for the locked period"
+          },
+          "calculated_at": {
+            "name": "Last calculated"
+          },
+          "last_success": {
+            "name": "Last successful update"
+          },
+          "warnings": {
+            "name": "Warning codes"
+          }
+        }
+      },
+      "data_status": {
+        "name": "Price data status",
+        "state": {
+          "ready": "Ready",
+          "waiting_for_prices": "Waiting for prices",
+          "no_profitable_periods": "No suitable periods",
+          "source_unavailable": "Price source unavailable",
+          "invalid_data": "Invalid price data"
+        },
+        "state_attributes": {
+          "available": {
+            "name": "Data available"
+          },
+          "error_code": {
+            "name": "Error code"
+          },
+          "last_success": {
+            "name": "Last successful update"
+          },
+          "calculated_at": {
+            "name": "Last calculated"
+          },
+          "warnings": {
+            "name": "Warning codes"
+          }
+        }
+      },
+      "modeled_savings_per_kw": {
+        "name": "Modeled saving per kW"
+      },
+      "current_price": {
+        "name": "Current price",
+        "state_attributes": {
+          "reason_code": {
+            "name": "Decision reason",
+            "state": {
+              "no_eligible_prices": "No price intervals are available in the selected window.",
+              "price_at_or_below_limit": "The current price meets your limit.",
+              "no_qualifying_price_now": "No qualifying price is active now.",
+              "no_applicable_window": "No daily window applies.",
+              "waiting_for_window_prices": "Waiting for prices for the full window.",
+              "no_full_interval_in_window": "No complete price interval fits in the window.",
+              "no_future_prices": "No future price intervals are available.",
+              "price_ceiling_relaxed": "The plan exceeds the price ceiling to meet the deadline.",
+              "deadline_relaxed": "The plan respects the price ceiling and runs past the deadline.",
+              "constraints_unsatisfied": "The price ceiling and deadline cannot both be met.",
+              "price_ceiling": "The price ceiling prevents the requested running time.",
+              "deadline": "The deadline prevents the requested running time.",
+              "insufficient_duration": "Not enough eligible time for the requested run.",
+              "cheapest_intervals_selected": "The cheapest eligible intervals were selected.",
+              "waiting_for_current_price": "Waiting for a price for the current interval.",
+              "above_threshold": "The current price exceeds your limit.",
+              "outside_allowed_window": "The current price meets your limit. The allowed time window is closed.",
+              "schedule_locked": "The selected schedule stays in place until its planned end.",
+              "source_unavailable": "The configured price source is unavailable.",
+              "invalid_data": "The price source returned invalid or incomplete data."
+            }
+          },
+          "status": {
+            "name": "Status",
+            "state": {
+              "active": "Active",
+              "scheduled": "Scheduled",
+              "no_prices": "Waiting for price coverage",
+              "no_window": "Outside the time window",
+              "price_ceiling": "Price limit prevents the schedule",
+              "insufficient_duration": "Not enough time",
+              "source_unavailable": "Price source unavailable",
+              "invalid_data": "Invalid price data",
+              "above_threshold": "Above the price limit",
+              "waiting_for_prices": "Waiting for prices",
+              "deadline": "The run does not fit before the deadline",
+              "constraints_unsatisfied": "No schedule satisfies the settings",
+              "completed": "Finished for this window"
+            }
+          },
+          "active": {
+            "name": "Signal active"
+          },
+          "current_price": {
+            "name": "Current price"
+          },
+          "currency": {
+            "name": "Currency"
+          },
+          "threshold_price_per_kwh": {
+            "name": "Price limit"
+          },
+          "threshold_comparison": {
+            "name": "Price compared with limit",
+            "state": {
+              "at_or_below": "At or below the limit",
+              "above": "Above the limit"
+            }
+          },
+          "window_start": {
+            "name": "Window starts"
+          },
+          "window_end": {
+            "name": "Window ends"
+          },
+          "provider": {
+            "name": "Price source"
+          },
+          "calculated_at": {
+            "name": "Last calculated"
+          },
+          "last_success": {
+            "name": "Last successful update"
+          }
+        }
+      },
+      "price_schedule": {
+        "name": "Running schedule",
+        "state_attributes": {
+          "reason_code": {
+            "name": "Decision reason",
+            "state": {
+              "no_eligible_prices": "No price intervals are available in the selected window.",
+              "price_at_or_below_limit": "The current price meets your limit.",
+              "no_qualifying_price_now": "No qualifying price is active now.",
+              "no_applicable_window": "No daily window applies.",
+              "waiting_for_window_prices": "Waiting for prices for the full window.",
+              "no_full_interval_in_window": "No complete price interval fits in the window.",
+              "no_future_prices": "No future price intervals are available.",
+              "price_ceiling_relaxed": "The plan exceeds the price ceiling to meet the deadline.",
+              "deadline_relaxed": "The plan respects the price ceiling and runs past the deadline.",
+              "constraints_unsatisfied": "The price ceiling and deadline cannot both be met.",
+              "price_ceiling": "The price ceiling prevents the requested running time.",
+              "deadline": "The deadline prevents the requested running time.",
+              "insufficient_duration": "Not enough eligible time for the requested run.",
+              "cheapest_intervals_selected": "The cheapest eligible intervals were selected.",
+              "waiting_for_current_price": "Waiting for a price for the current interval.",
+              "above_threshold": "The current price exceeds your limit.",
+              "outside_allowed_window": "The current price meets your limit. The allowed time window is closed.",
+              "schedule_locked": "The selected schedule stays in place until its planned end.",
+              "source_unavailable": "The configured price source is unavailable.",
+              "invalid_data": "The price source returned invalid or incomplete data."
+            }
+          },
+          "status": {
+            "name": "Status",
+            "state": {
+              "active": "Active",
+              "scheduled": "Scheduled",
+              "no_prices": "Waiting for price coverage",
+              "no_window": "Outside the time window",
+              "price_ceiling": "Price limit prevents the schedule",
+              "insufficient_duration": "Not enough time",
+              "source_unavailable": "Price source unavailable",
+              "invalid_data": "Invalid price data",
+              "above_threshold": "Above the price limit",
+              "waiting_for_prices": "Waiting for prices",
+              "deadline": "The run does not fit before the deadline",
+              "constraints_unsatisfied": "No schedule satisfies the settings",
+              "completed": "Finished for this window"
+            }
+          },
+          "error_code": {
+            "name": "Error code"
+          },
+          "current_price": {
+            "name": "Current price"
+          },
+          "currency": {
+            "name": "Currency"
+          },
+          "threshold_price_per_kwh": {
+            "name": "Price limit"
+          },
+          "threshold_comparison": {
+            "name": "Price compared with limit",
+            "state": {
+              "at_or_below": "At or below the limit",
+              "above": "Above the limit"
+            }
+          },
+          "next_change": {
+            "name": "Next evaluation"
+          },
+          "next_period_start": {
+            "name": "Next run starts"
+          },
+          "next_period_end": {
+            "name": "Next run ends"
+          },
+          "active_period_end": {
+            "name": "Current run ends"
+          },
+          "mode": {
+            "name": "Scheduling mode",
+            "state": {
+              "threshold": "Price limit",
+              "cheapest_contiguous": "One uninterrupted run",
+              "cheapest_split": "Split into cheaper runs"
+            }
+          },
+          "window_start": {
+            "name": "Window starts"
+          },
+          "window_end": {
+            "name": "Window ends"
+          },
+          "weekdays": {
+            "name": "Days of the week"
+          },
+          "required_duration_minutes": {
+            "name": "Required running time (min)"
+          },
+          "min_run_minutes": {
+            "name": "Shortest run (min)"
+          },
+          "price_ceiling_per_kwh": {
+            "name": "Price ceiling"
+          },
+          "fallback": {
+            "name": "Fallback priority",
+            "state": {
+              "price": "Keep the price limit",
+              "deadline": "Prefer enough running time"
+            }
+          },
+          "deadline": {
+            "name": "Deadline"
+          },
+          "provider": {
+            "name": "Price source"
+          },
+          "calculated_at": {
+            "name": "Last calculated"
+          },
+          "last_success": {
+            "name": "Last successful update"
+          },
+          "selected_run_count": {
+            "name": "Selected runs"
+          },
+          "selected_periods": {
+            "name": "Selected periods"
+          },
+          "occurrence_end": {
+            "name": "Schedule window ends"
+          },
+          "available": {
+            "name": "Data available"
+          },
+          "active": {
+            "name": "Signal active"
+          },
+          "warnings": {
+            "name": "Warning codes"
+          }
+        }
+      },
+      "price_data_status": {
+        "name": "Schedule status",
+        "state": {
+          "active": "Active",
+          "scheduled": "Scheduled",
+          "no_prices": "Waiting for price coverage",
+          "no_window": "Outside the time window",
+          "price_ceiling": "Price limit prevents the schedule",
+          "insufficient_duration": "Not enough time",
+          "source_unavailable": "Price source unavailable",
+          "invalid_data": "Invalid price data",
+          "above_threshold": "Above the price limit",
+          "waiting_for_prices": "Waiting for prices",
+          "deadline": "The run does not fit before the deadline",
+          "constraints_unsatisfied": "No schedule satisfies the settings",
+          "completed": "Finished for this window"
+        },
+        "state_attributes": {
+          "available": {
+            "name": "Data available"
+          },
+          "status": {
+            "name": "Status",
+            "state": {
+              "active": "Active",
+              "scheduled": "Scheduled",
+              "no_prices": "Waiting for price coverage",
+              "no_window": "Outside the time window",
+              "price_ceiling": "Price limit prevents the schedule",
+              "insufficient_duration": "Not enough time",
+              "source_unavailable": "Price source unavailable",
+              "invalid_data": "Invalid price data",
+              "above_threshold": "Above the price limit",
+              "waiting_for_prices": "Waiting for prices",
+              "deadline": "The run does not fit before the deadline",
+              "constraints_unsatisfied": "No schedule satisfies the settings",
+              "completed": "Finished for this window"
+            }
+          },
+          "active": {
+            "name": "Signal active"
+          },
+          "reason_code": {
+            "name": "Decision reason",
+            "state": {
+              "no_eligible_prices": "No price intervals are available in the selected window.",
+              "price_at_or_below_limit": "The current price meets your limit.",
+              "no_qualifying_price_now": "No qualifying price is active now.",
+              "no_applicable_window": "No daily window applies.",
+              "waiting_for_window_prices": "Waiting for prices for the full window.",
+              "no_full_interval_in_window": "No complete price interval fits in the window.",
+              "no_future_prices": "No future price intervals are available.",
+              "price_ceiling_relaxed": "The plan exceeds the price ceiling to meet the deadline.",
+              "deadline_relaxed": "The plan respects the price ceiling and runs past the deadline.",
+              "constraints_unsatisfied": "The price ceiling and deadline cannot both be met.",
+              "price_ceiling": "The price ceiling prevents the requested running time.",
+              "deadline": "The deadline prevents the requested running time.",
+              "insufficient_duration": "Not enough eligible time for the requested run.",
+              "cheapest_intervals_selected": "The cheapest eligible intervals were selected.",
+              "waiting_for_current_price": "Waiting for a price for the current interval.",
+              "above_threshold": "The current price exceeds your limit.",
+              "outside_allowed_window": "The current price meets your limit. The allowed time window is closed.",
+              "schedule_locked": "The selected schedule stays in place until its planned end.",
+              "source_unavailable": "The configured price source is unavailable.",
+              "invalid_data": "The price source returned invalid or incomplete data."
+            }
+          },
+          "error_code": {
+            "name": "Error code"
+          },
+          "current_price": {
+            "name": "Current price"
+          },
+          "currency": {
+            "name": "Currency"
+          },
+          "threshold_price_per_kwh": {
+            "name": "Price limit"
+          },
+          "threshold_comparison": {
+            "name": "Price compared with limit",
+            "state": {
+              "at_or_below": "At or below the limit",
+              "above": "Above the limit"
+            }
+          },
+          "mode": {
+            "name": "Scheduling mode",
+            "state": {
+              "threshold": "Price limit",
+              "cheapest_contiguous": "One uninterrupted run",
+              "cheapest_split": "Split into cheaper runs"
+            }
+          },
+          "window_start": {
+            "name": "Window starts"
+          },
+          "window_end": {
+            "name": "Window ends"
+          },
+          "weekdays": {
+            "name": "Days of the week"
+          },
+          "required_duration_minutes": {
+            "name": "Required running time (min)"
+          },
+          "min_run_minutes": {
+            "name": "Shortest run (min)"
+          },
+          "price_ceiling_per_kwh": {
+            "name": "Price ceiling"
+          },
+          "fallback": {
+            "name": "Fallback priority",
+            "state": {
+              "price": "Keep the price limit",
+              "deadline": "Prefer enough running time"
+            }
+          },
+          "deadline": {
+            "name": "Deadline"
+          },
+          "provider": {
+            "name": "Price source"
+          },
+          "next_change": {
+            "name": "Next evaluation"
+          },
+          "calculated_at": {
+            "name": "Last calculated"
+          },
+          "last_success": {
+            "name": "Last successful update"
+          }
+        }
+      },
+      "next_price_start": {
+        "name": "Next run starts"
+      },
+      "next_price_end": {
+        "name": "Next run ends"
+      },
+      "decision_reason": {
+        "name": "Cutoff decision",
+        "state": {
+          "source_unavailable": "Price source unavailable",
+          "invalid_data": "Price data could not be used",
+          "preheat": "Scheduled preheating",
+          "shutdown": "Scheduled cutoff",
+          "recovery": "Scheduled recovery",
+          "waiting_for_prices": "Waiting for more prices",
+          "next_cutoff_selected": "Next cutoff scheduled",
+          "no_cutoff_selected": "No suitable cutoff"
+        },
+        "state_attributes": {
+          "data_status": {
+            "name": "Price data status",
+            "state": {
+              "ready": "Ready",
+              "waiting_for_prices": "Waiting for prices",
+              "no_profitable_periods": "No suitable periods",
+              "source_unavailable": "Price source unavailable",
+              "invalid_data": "Invalid price data"
+            }
+          },
+          "next_change": {
+            "name": "Next evaluation"
+          },
+          "locked": {
+            "name": "Period locked"
+          },
+          "locked_settings_known": {
+            "name": "Locked settings known"
+          },
+          "effective_settings": {
+            "name": "Effective settings"
+          },
+          "locked_effective_settings": {
+            "name": "Settings used for the locked period"
+          },
+          "warnings": {
+            "name": "Warning codes"
+          }
+        }
+      }
+    },
+    "binary_sensor": {
+      "cutoff_active": {
+        "name": "Cutoff active",
+        "state": {
+          "on": "Active",
+          "off": "Inactive"
+        }
+      },
+      "price_active": {
+        "name": "Use electricity now"
+      }
+    }
+  },
+  "common": {
+    "profile_name_heating": "Spot cutoff optimizer",
+    "profile_name_cheap_now": "Cheap electricity",
+    "profile_name_water_heater": "Water heater",
+    "profile_name_appliance": "Appliance cycle",
+    "profile_name_ev": "EV charging"
+  }
+}

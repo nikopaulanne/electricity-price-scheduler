@@ -1,0 +1,878 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Välj scenario och priskälla",
+        "description": "Välj vad du vill använda elpriset till. Om det bara finns en tillgänglig priskälla är den förvald.",
+        "data": {
+          "scenario": "Vad vill du använda elpriset till?",
+          "price_entity_id": "Nordpool-prissensor",
+          "currency": "Valuta",
+          "unit_override": "Prisenhet som sensorn använder"
+        }
+      },
+      "settings": {
+        "title": "Ställ in ditt schema",
+        "description": "Priser jämförs i {currency}/kWh. Minsta prisskillnad anges i den valda valutan per kWh. Besparingen är en modell för en referenslast på 1 kW, inte en garanti för elräkningen.",
+        "data": {
+          "profile_name": "Profilnamn",
+          "max_cutoff_minutes": "Längsta avstängningstid",
+          "min_price_diff_per_kwh": "Minsta prisskillnad per kWh",
+          "max_periods": "Maximalt antal scheman per tidsperiod",
+          "multiplier_mode": "Modell för förvärmning och återhämtning",
+          "preheat_factor": "Fast förvärmningsfaktor",
+          "recovery_factor": "Fast återhämtningsfaktor",
+          "temperature_entity_id": "Utomhustemperatursensor"
+        }
+      },
+      "reconfigure": {
+        "title": "Byt Nordpool-priskälla",
+        "description": "Välj och validera en ersättningssensor. Om valutan ändras anger du en ny gräns i den valutan; ingen valutakonvertering görs.",
+        "data": {
+          "price_entity_id": "Nordpool-prissensor",
+          "currency": "Valuta",
+          "unit_override": "Prisenhet som sensorn använder",
+          "min_price_diff_per_kwh": "Ny minsta prisskillnad per kWh",
+          "threshold_price_per_kwh": "Prisgräns för lågt pris",
+          "price_ceiling_per_kwh": "Högsta pris"
+        }
+      },
+      "price_setup": {
+        "title": "Ställ in din prisprofil",
+        "description": "Priser anges i {currency}/kWh. För euro anger du 0.05 för 5 cent/kWh. Om tidsfönstret sträcker sig över midnatt anger du en sluttid som är tidigare än starttiden.",
+        "data": {
+          "profile_name": "Profilnamn",
+          "threshold_price_per_kwh": "Prisgräns för lågt pris",
+          "required_duration_minutes": "Total drifttid",
+          "window_start": "Tidigaste start",
+          "window_end": "Klart senast",
+          "weekdays": "Veckodagar",
+          "mode": "Hur drifttiden ska schemaläggas",
+          "min_run_minutes": "Kortaste körning vid uppdelning",
+          "price_ceiling_per_kwh": "Högsta pris",
+          "fallback": "Om prisgränsen hindrar tillräcklig drifttid"
+        }
+      },
+      "price_preview_empty": {
+        "title": "Granska din profil",
+        "description": "Ingen körning valdes utifrån aktuella priser och inställningar. Kontrollera inställningarna eller spara profilen och granska dess aktuella status.\n\nÖppna den sparade profilen och kontrollera signalen och schemat. Se [hur du använder signalen i en automation]({automation_guide_url}).",
+        "data": {
+          "edit": "Tillbaka till inställningarna"
+        }
+      },
+      "price_preview_unavailable": {
+        "title": "Granska din profil",
+        "description": "Förhandsvisningen är inte tillgänglig. Kontrollera om den valda priskällan har aktuella priser.\n\nÖppna den sparade profilen och kontrollera signalen och schemat. Se [hur du använder signalen i en automation]({automation_guide_url}).",
+        "data": {
+          "edit": "Tillbaka till inställningarna"
+        }
+      },
+      "price_preview_threshold_active": {
+        "title": "Granska din profil",
+        "description": "Pris just nu: {current_price} {currency}/kWh. Din gräns: {threshold} {currency}/kWh. **Använd el nu** skulle vara aktiv.\n\nÖppna den sparade profilen och kontrollera signalen och schemat. Se [hur du använder signalen i en automation]({automation_guide_url}).",
+        "data": {
+          "edit": "Tillbaka till inställningarna"
+        }
+      },
+      "price_preview_threshold_scheduled": {
+        "title": "Granska din profil",
+        "description": "Signalen är inaktiv just nu. Nästa pris som är högst {threshold} {currency}/kWh börjar {next_start} (Home Assistants lokala tid).\n\nÖppna den sparade profilen och kontrollera signalen och schemat. Se [hur du använder signalen i en automation]({automation_guide_url}).",
+        "data": {
+          "edit": "Tillbaka till inställningarna"
+        }
+      },
+      "price_preview_threshold_above": {
+        "title": "Granska din profil",
+        "description": "Pris just nu: {current_price} {currency}/kWh. Det överstiger din gräns på {threshold} {currency}/kWh. Signalen skulle vara inaktiv.\n\nÖppna den sparade profilen och kontrollera signalen och schemat. Se [hur du använder signalen i en automation]({automation_guide_url}).",
+        "data": {
+          "edit": "Tillbaka till inställningarna"
+        }
+      },
+      "price_preview_schedule_active": {
+        "title": "Granska din profil",
+        "description": "Den första körningen börjar nu: {start}–{end}. Planerad drifttid: {planned_duration} minuter.\n\nÖppna den sparade profilen och kontrollera signalen och schemat. Se [hur du använder signalen i en automation]({automation_guide_url}).",
+        "data": {
+          "edit": "Tillbaka till inställningarna"
+        }
+      },
+      "price_preview_schedule_scheduled": {
+        "title": "Granska din profil",
+        "description": "Första körningen: {start}–{end}, i Home Assistants lokala tid. Schemat omfattar {planned_duration} av de begärda {required_duration} minuterna.\n\nÖppna den sparade profilen och kontrollera signalen och schemat. Se [hur du använder signalen i en automation]({automation_guide_url}).",
+        "data": {
+          "edit": "Tillbaka till inställningarna"
+        }
+      },
+      "price_preview_waiting": {
+        "title": "Granska din profil",
+        "description": "Väntar på de priser som profilen behöver. När du har sparat profilen uppdateras den när priserna kommer från källan.\n\nÖppna den sparade profilen och kontrollera signalen och schemat. Se [hur du använder signalen i en automation]({automation_guide_url}).",
+        "data": {
+          "edit": "Tillbaka till inställningarna"
+        }
+      },
+      "price_preview_price_ceiling": {
+        "title": "Granska din profil",
+        "description": "Pristaket gör att ett fullständigt schema inte kan skapas. Du kan behålla eller ändra gränsen.\n\nÖppna den sparade profilen och kontrollera signalen och schemat. Se [hur du använder signalen i en automation]({automation_guide_url}).",
+        "data": {
+          "edit": "Tillbaka till inställningarna"
+        }
+      },
+      "price_preview_deadline": {
+        "title": "Granska din profil",
+        "description": "Den nödvändiga drifttiden ryms inte före sluttiden. Prova med en tidigare start, senare sluttid eller kortare körning.\n\nÖppna den sparade profilen och kontrollera signalen och schemat. Se [hur du använder signalen i en automation]({automation_guide_url}).",
+        "data": {
+          "edit": "Tillbaka till inställningarna"
+        }
+      },
+      "price_preview_insufficient_duration": {
+        "title": "Granska din profil",
+        "description": "Det finns inte tillräckligt med tillgänglig tid för den begärda körningen. Kontrollera drifttiden och tidsfönstret.\n\nÖppna den sparade profilen och kontrollera signalen och schemat. Se [hur du använder signalen i en automation]({automation_guide_url}).",
+        "data": {
+          "edit": "Tillbaka till inställningarna"
+        }
+      },
+      "price_preview_constraints_unsatisfied": {
+        "title": "Granska din profil",
+        "description": "De aktuella priserna kan inte uppfylla alla inställningar samtidigt. Kontrollera pristaket, drifttiden och sluttiden.\n\nÖppna den sparade profilen och kontrollera signalen och schemat. Se [hur du använder signalen i en automation]({automation_guide_url}).",
+        "data": {
+          "edit": "Tillbaka till inställningarna"
+        }
+      },
+      "price_preview_no_eligible": {
+        "title": "Granska din profil",
+        "description": "Inga prissatta intervall passar det valda tidsfönstret. Kontrollera start- och sluttiderna.\n\nÖppna den sparade profilen och kontrollera signalen och schemat. Se [hur du använder signalen i en automation]({automation_guide_url}).",
+        "data": {
+          "edit": "Tillbaka till inställningarna"
+        }
+      },
+      "market_source": {
+        "title": "Välj scenario och priskälla",
+        "description": "Välj vad du vill använda elpriset till. Om det bara finns en tillgänglig priskälla är den förvald. Kontrollera om priserna inkluderar skatter och avgifter innan du anger en prisgräns.",
+        "data": {
+          "scenario": "Vad vill du använda elpriset till?",
+          "currency": "Valuta",
+          "unit_override": "Prisenhet som sensorn använder",
+          "price_source": "Priskälla",
+          "home_name": "Namn på Tibber-hem"
+        }
+      },
+      "market_reconfigure": {
+        "title": "Byt priskälla",
+        "description": "Välj och validera en ersättningskälla. Ange en ny gräns om valutan ändras.",
+        "data": {
+          "currency": "Valuta",
+          "unit_override": "Prisenhet som sensorn använder",
+          "min_price_diff_per_kwh": "Ny minsta prisskillnad per kWh",
+          "threshold_price_per_kwh": "Prisgräns för lågt pris",
+          "price_ceiling_per_kwh": "Högsta pris",
+          "price_source": "Priskälla",
+          "home_name": "Namn på Tibber-hem"
+        }
+      }
+    },
+    "error": {
+      "base": "Det gick inte att validera den valda källan eller inställningarna.",
+      "price_entity_id": "Välj en tillgänglig Nordpool-sensor.",
+      "currency": "Välj valutan som den här sensorn använder.",
+      "unit_override": "Välj prisenheten som sensorn använder.",
+      "min_price_diff_per_kwh": "Ange en ny gräns eftersom priskällans valuta har ändrats.",
+      "source_unavailable": "Den valda priskällan är otillgänglig eller saknar aktuella data.",
+      "invalid_source_data": "Det gick inte att läsa prisdata. Kontrollera priser, tidsstämplar, valuta och prisenhet för den valda källan.",
+      "unit_override_required": "Det gick inte att identifiera prisenheten. Välj den enhet som priskällan anger.",
+      "currency_required": "Välj valutan som priserna från källan använder.",
+      "invalid_currency": "Välj en valuta som stöds.",
+      "currency_mismatch": "Den konfigurerade valutan överensstämmer inte med den valda sensorn.",
+      "currency_changed_threshold_required": "Ange en ny prisgräns i den nya valutan innan du byter källa.",
+      "invalid_profile_name": "Ange ett profilnamn.",
+      "invalid_settings": "En eller flera optimeringsinställningar är ogiltiga.",
+      "invalid_max_cutoff": "Välj en varaktighet från 30 minuter till 6 timmar i steg om 15 minuter.",
+      "invalid_max_periods": "Välj mellan 1 och 6 scheman.",
+      "invalid_min_price_diff": "Ange en ändlig, icke-negativ prisskillnad i vald valuta per kWh.",
+      "invalid_preheat_factor": "Välj en förvärmningsfaktor mellan 1 och 3.",
+      "invalid_recovery_factor": "Välj en återhämtningsfaktor mellan 1 och 3.",
+      "invalid_multiplier_mode": "Välj en av de tillgängliga förvärmningsmodellerna.",
+      "temperature_sensor_required": "Välj en utomhustemperatursensor för temperaturanpassade faktorer.",
+      "invalid_temperature_sensor": "Välj en tillgänglig numerisk temperatursensor i °C, °F eller K.",
+      "invalid_window": "Välj olika start- och sluttider, eller lämna båda tomma om de är valfria.",
+      "invalid_schedule_duration": "Välj drifttider i steg om 15 minuter. Den kortaste körningen får inte vara längre än den totala drifttiden.",
+      "invalid_helper": "Välj en nummerhjälpare och dess enhet.",
+      "invalid_price_value": "Ange ett giltigt pris i den nya valutan.",
+      "currency_change_with_price_helper": "Töm fältet för hjälparen för minsta prisskillnad i profilens inställningar innan du byter valuta.",
+      "tibber_home_required": "Det finns mer än ett aktivt Tibber-hem. Ange hemmets namn så som det visas i Tibber.",
+      "tibber_home_not_found": "Kontrollera namnet på Tibber-hemmet, inklusive stavningen.",
+      "threshold_only_source": "Amber Electric fungerar bara med Lågt pris nu. Välj Lågt pris nu eller en annan priskälla."
+    },
+    "abort": {
+      "reconfigure_successful": "Priskällan har uppdaterats.",
+      "invalid_scenario": "Välj ett scenario som stöds.",
+      "no_price_sources": "Konfigurera en priskälla som stöds i Home Assistant och försök igen."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Optimeringsinställningar",
+        "description": "Priser och gränsvärden anges i {currency}/kWh. En modellerad besparing uppskattas för en referenslast på 1 kW.",
+        "data": {
+          "max_cutoff_minutes": "Längsta avstängningstid",
+          "min_price_diff_per_kwh": "Minsta prisskillnad per kWh",
+          "max_periods": "Maximalt antal scheman per tidsperiod",
+          "multiplier_mode": "Modell för förvärmning och återhämtning",
+          "preheat_factor": "Fast förvärmningsfaktor",
+          "recovery_factor": "Fast återhämtningsfaktor",
+          "temperature_entity_id": "Utomhustemperatursensor",
+          "max_cutoff_entity_id": "Hjälpare för maximal varaktighet (valfri)",
+          "max_cutoff_entity_unit": "Enhet för varaktighetshjälpare",
+          "min_price_diff_entity_id": "Hjälpare för minsta prisskillnad (valfri)",
+          "min_price_diff_entity_unit": "Enhet för prisskillnadshjälpare"
+        }
+      },
+      "price_options": {
+        "title": "Prisprofilinställningar",
+        "description": "Prisenhet: {currency}/kWh. Lämna veckodagarna tomma för att använda alla dagar. För scheman över natten avser veckodagen den dag då tidsfönstret börjar.",
+        "data": {
+          "threshold_price_per_kwh": "Prisgräns för lågt pris",
+          "required_duration_minutes": "Total drifttid",
+          "window_start": "Tidigaste start",
+          "window_end": "Klart senast",
+          "weekdays": "Veckodagar",
+          "mode": "Hur drifttiden ska schemaläggas",
+          "min_run_minutes": "Kortaste körning vid uppdelning",
+          "price_ceiling_per_kwh": "Högsta pris",
+          "fallback": "Om prisgränsen hindrar tillräcklig drifttid"
+        }
+      }
+    },
+    "error": {
+      "base": "Det gick inte att validera inställningarna.",
+      "invalid_settings": "En eller flera optimeringsinställningar är ogiltiga.",
+      "invalid_max_cutoff": "Välj en varaktighet från 30 minuter till 6 timmar i steg om 15 minuter.",
+      "invalid_max_periods": "Välj mellan 1 och 6 scheman.",
+      "invalid_min_price_diff": "Ange en ändlig, icke-negativ prisskillnad i vald valuta per kWh.",
+      "invalid_preheat_factor": "Välj en förvärmningsfaktor mellan 1 och 3.",
+      "invalid_recovery_factor": "Välj en återhämtningsfaktor mellan 1 och 3.",
+      "invalid_multiplier_mode": "Välj en av de tillgängliga förvärmningsmodellerna.",
+      "temperature_sensor_required": "Välj en utomhustemperatursensor för temperaturanpassade faktorer.",
+      "invalid_temperature_sensor": "Välj en tillgänglig numerisk temperatursensor i °C, °F eller K.",
+      "invalid_window": "Välj olika start- och sluttider, eller lämna båda tomma om de är valfria.",
+      "invalid_schedule_duration": "Välj drifttider i steg om 15 minuter. Den kortaste körningen får inte vara längre än den totala drifttiden.",
+      "invalid_profile_name": "Ange ett profilnamn.",
+      "invalid_helper": "Välj en nummerhjälpare och dess enhet.",
+      "invalid_price_value": "Ange ett giltigt pris i den nya valutan.",
+      "currency_change_with_price_helper": "Töm fältet för hjälparen för minsta prisskillnad i profilens inställningar innan du byter valuta."
+    }
+  },
+  "selector": {
+    "multiplier_mode": {
+      "options": {
+        "fixed": "Fasta faktorer",
+        "outdoor_temperature": "Anpassa faktorer efter utomhustemperaturen"
+      }
+    },
+    "scenario": {
+      "options": {
+        "heating": "Uppvärmning och värmepump",
+        "cheap_now": "Lågt pris nu",
+        "water_heater": "Varmvattenberedare",
+        "appliance": "Hushållsapparatens körning",
+        "ev": "Laddning av elbil"
+      }
+    },
+    "duration_helper_unit": {
+      "options": {
+        "h": "Timmar",
+        "min": "Minuter"
+      }
+    },
+    "price_helper_unit": {
+      "options": {
+        "currency_per_kwh": "Valuta per kWh (t.ex. EUR/kWh)",
+        "subunit_per_kwh": "Mindre valutaenheter per kWh (t.ex. cent/kWh)"
+      }
+    },
+    "schedule_mode": {
+      "options": {
+        "cheapest_contiguous": "En sammanhängande körning",
+        "cheapest_split": "Dela upp i billigare körningar"
+      }
+    },
+    "fallback": {
+      "options": {
+        "price": "Behåll prisgränsen",
+        "deadline": "Prioritera tillräcklig drifttid"
+      }
+    },
+    "weekdays": {
+      "options": {
+        "mon": "Måndag",
+        "tue": "Tisdag",
+        "wed": "Onsdag",
+        "thu": "Torsdag",
+        "fri": "Fredag",
+        "sat": "Lördag",
+        "sun": "Söndag"
+      }
+    }
+  },
+  "entity": {
+    "sensor": {
+      "phase": {
+        "name": "Avstängningsfas",
+        "state": {
+          "normal": "Normal",
+          "preheat": "Förvärmning",
+          "shutdown": "Avstängning",
+          "recovery": "Återhämtning",
+          "unavailable": "Otillgänglig"
+        },
+        "state_attributes": {
+          "next_change": {
+            "name": "Nästa kontroll"
+          },
+          "locked": {
+            "name": "Perioden är låst"
+          },
+          "locked_settings_known": {
+            "name": "Inställningarna för låst period är kända"
+          },
+          "locked_period": {
+            "name": "Låst period"
+          },
+          "locked_effective_settings": {
+            "name": "Inställningar för låst period"
+          },
+          "decision_reason": {
+            "name": "Skäl till beslutet",
+            "state": {
+              "source_unavailable": "Priskällan är otillgänglig",
+              "invalid_data": "Prisdata kunde inte användas",
+              "preheat": "Schemalagd förvärmning",
+              "shutdown": "Schemalagd avstängning",
+              "recovery": "Schemalagd återhämtning",
+              "waiting_for_prices": "Väntar på fler priser",
+              "next_cutoff_selected": "Nästa avstängning schemalagd",
+              "no_cutoff_selected": "Ingen lämplig avstängning"
+            }
+          },
+          "effective_settings": {
+            "name": "Gällande inställningar"
+          },
+          "warnings": {
+            "name": "Varningskoder"
+          }
+        }
+      },
+      "next_cutoff_start": {
+        "name": "Nästa avstängning börjar"
+      },
+      "next_cutoff_end": {
+        "name": "Nästa avstängning slutar"
+      },
+      "schedule": {
+        "name": "Avstängningsschema",
+        "state_attributes": {
+          "currency": {
+            "name": "Valuta"
+          },
+          "provider": {
+            "name": "Priskälla"
+          },
+          "data_status": {
+            "name": "Prisdatastatus",
+            "state": {
+              "ready": "Klar",
+              "waiting_for_prices": "Väntar på priser",
+              "no_profitable_periods": "Inga lämpliga perioder",
+              "source_unavailable": "Priskällan är otillgänglig",
+              "invalid_data": "Ogiltiga prisdata"
+            }
+          },
+          "next_change": {
+            "name": "Nästa kontroll"
+          },
+          "locked": {
+            "name": "Perioden är låst"
+          },
+          "locked_settings_known": {
+            "name": "Inställningarna för låst period är kända"
+          },
+          "locked_period": {
+            "name": "Låst period"
+          },
+          "effective_settings": {
+            "name": "Gällande inställningar"
+          },
+          "locked_effective_settings": {
+            "name": "Inställningar för låst period"
+          },
+          "calculated_at": {
+            "name": "Senast beräknad"
+          },
+          "last_success": {
+            "name": "Senaste lyckade uppdatering"
+          },
+          "warnings": {
+            "name": "Varningskoder"
+          }
+        }
+      },
+      "data_status": {
+        "name": "Prisdatastatus",
+        "state": {
+          "ready": "Klar",
+          "waiting_for_prices": "Väntar på priser",
+          "no_profitable_periods": "Inga lämpliga perioder",
+          "source_unavailable": "Priskällan är otillgänglig",
+          "invalid_data": "Ogiltiga prisdata"
+        },
+        "state_attributes": {
+          "available": {
+            "name": "Data tillgängliga"
+          },
+          "error_code": {
+            "name": "Felkod"
+          },
+          "last_success": {
+            "name": "Senaste lyckade uppdatering"
+          },
+          "calculated_at": {
+            "name": "Senast beräknad"
+          },
+          "warnings": {
+            "name": "Varningskoder"
+          }
+        }
+      },
+      "modeled_savings_per_kw": {
+        "name": "Modellerad besparing per kW"
+      },
+      "current_price": {
+        "name": "Aktuellt pris",
+        "state_attributes": {
+          "reason_code": {
+            "name": "Skäl till beslutet",
+            "state": {
+              "no_eligible_prices": "Det finns inga priser för det valda tidsfönstret.",
+              "price_at_or_below_limit": "Det aktuella priset är högst den valda gränsen.",
+              "no_qualifying_price_now": "Ingen prisperiod uppfyller villkoren just nu.",
+              "no_applicable_window": "Inget dagligt tidsfönster är tillämpligt.",
+              "waiting_for_window_prices": "Väntar på priser för hela tidsfönstret.",
+              "no_full_interval_in_window": "Ingen hel prisperiod ryms i tidsfönstret.",
+              "no_future_prices": "Det finns inga kommande prisperioder.",
+              "price_ceiling_relaxed": "Schemat överskrider pristaket för att hinna klart i tid.",
+              "deadline_relaxed": "Schemat följer pristaket och körningen fortsätter efter sluttiden.",
+              "constraints_unsatisfied": "Pristaket och sluttiden kan inte uppfyllas samtidigt.",
+              "price_ceiling": "Pristaket hindrar den begärda körtiden.",
+              "deadline": "Körtiden ryms inte före sluttiden.",
+              "insufficient_duration": "Det finns inte tillräckligt med tid som uppfyller villkoren.",
+              "cheapest_intervals_selected": "De billigaste perioderna som uppfyller villkoren valdes.",
+              "waiting_for_current_price": "Väntar på priset för den pågående perioden.",
+              "above_threshold": "Det aktuella priset överskrider din gräns.",
+              "outside_allowed_window": "Priset är inom gränsen. Det tillåtna tidsfönstret är stängt.",
+              "schedule_locked": "Det valda schemat ligger fast till planerat slut.",
+              "source_unavailable": "Den valda priskällan är inte tillgänglig.",
+              "invalid_data": "Priskällan gav ogiltiga eller ofullständiga uppgifter."
+            }
+          },
+          "status": {
+            "name": "Status",
+            "state": {
+              "active": "Aktiv",
+              "scheduled": "Schemalagd",
+              "no_prices": "Väntar på prisdata",
+              "no_window": "Utanför tidsfönstret",
+              "price_ceiling": "Prisgränsen hindrar schemat",
+              "insufficient_duration": "Otillräcklig tid",
+              "source_unavailable": "Priskällan är otillgänglig",
+              "invalid_data": "Ogiltiga prisdata",
+              "above_threshold": "Över prisgränsen",
+              "waiting_for_prices": "Väntar på priser",
+              "deadline": "Körningen ryms inte före sluttiden",
+              "constraints_unsatisfied": "Inget schema uppfyller inställningarna",
+              "completed": "Klart för det här tidsfönstret"
+            }
+          },
+          "active": {
+            "name": "Signal aktiv"
+          },
+          "current_price": {
+            "name": "Aktuellt pris"
+          },
+          "currency": {
+            "name": "Valuta"
+          },
+          "threshold_price_per_kwh": {
+            "name": "Prisgräns"
+          },
+          "threshold_comparison": {
+            "name": "Pris jämfört med gränsen",
+            "state": {
+              "at_or_below": "Högst prisgränsen",
+              "above": "Över prisgränsen"
+            }
+          },
+          "window_start": {
+            "name": "Tidsfönstret öppnar"
+          },
+          "window_end": {
+            "name": "Tidsfönstret stänger"
+          },
+          "provider": {
+            "name": "Priskälla"
+          },
+          "calculated_at": {
+            "name": "Senast beräknad"
+          },
+          "last_success": {
+            "name": "Senaste lyckade uppdatering"
+          }
+        }
+      },
+      "price_schedule": {
+        "name": "Driftschema",
+        "state_attributes": {
+          "reason_code": {
+            "name": "Skäl till beslutet",
+            "state": {
+              "no_eligible_prices": "Det finns inga priser för det valda tidsfönstret.",
+              "price_at_or_below_limit": "Det aktuella priset är högst den valda gränsen.",
+              "no_qualifying_price_now": "Ingen prisperiod uppfyller villkoren just nu.",
+              "no_applicable_window": "Inget dagligt tidsfönster är tillämpligt.",
+              "waiting_for_window_prices": "Väntar på priser för hela tidsfönstret.",
+              "no_full_interval_in_window": "Ingen hel prisperiod ryms i tidsfönstret.",
+              "no_future_prices": "Det finns inga kommande prisperioder.",
+              "price_ceiling_relaxed": "Schemat överskrider pristaket för att hinna klart i tid.",
+              "deadline_relaxed": "Schemat följer pristaket och körningen fortsätter efter sluttiden.",
+              "constraints_unsatisfied": "Pristaket och sluttiden kan inte uppfyllas samtidigt.",
+              "price_ceiling": "Pristaket hindrar den begärda körtiden.",
+              "deadline": "Körtiden ryms inte före sluttiden.",
+              "insufficient_duration": "Det finns inte tillräckligt med tid som uppfyller villkoren.",
+              "cheapest_intervals_selected": "De billigaste perioderna som uppfyller villkoren valdes.",
+              "waiting_for_current_price": "Väntar på priset för den pågående perioden.",
+              "above_threshold": "Det aktuella priset överskrider din gräns.",
+              "outside_allowed_window": "Priset är inom gränsen. Det tillåtna tidsfönstret är stängt.",
+              "schedule_locked": "Det valda schemat ligger fast till planerat slut.",
+              "source_unavailable": "Den valda priskällan är inte tillgänglig.",
+              "invalid_data": "Priskällan gav ogiltiga eller ofullständiga uppgifter."
+            }
+          },
+          "status": {
+            "name": "Status",
+            "state": {
+              "active": "Aktiv",
+              "scheduled": "Schemalagd",
+              "no_prices": "Väntar på prisdata",
+              "no_window": "Utanför tidsfönstret",
+              "price_ceiling": "Prisgränsen hindrar schemat",
+              "insufficient_duration": "Otillräcklig tid",
+              "source_unavailable": "Priskällan är otillgänglig",
+              "invalid_data": "Ogiltiga prisdata",
+              "above_threshold": "Över prisgränsen",
+              "waiting_for_prices": "Väntar på priser",
+              "deadline": "Körningen ryms inte före sluttiden",
+              "constraints_unsatisfied": "Inget schema uppfyller inställningarna",
+              "completed": "Klart för det här tidsfönstret"
+            }
+          },
+          "error_code": {
+            "name": "Felkod"
+          },
+          "current_price": {
+            "name": "Aktuellt pris"
+          },
+          "currency": {
+            "name": "Valuta"
+          },
+          "threshold_price_per_kwh": {
+            "name": "Prisgräns"
+          },
+          "threshold_comparison": {
+            "name": "Pris jämfört med gränsen",
+            "state": {
+              "at_or_below": "Högst prisgränsen",
+              "above": "Över prisgränsen"
+            }
+          },
+          "next_change": {
+            "name": "Nästa kontroll"
+          },
+          "next_period_start": {
+            "name": "Nästa körning börjar"
+          },
+          "next_period_end": {
+            "name": "Nästa körning slutar"
+          },
+          "active_period_end": {
+            "name": "Pågående körning slutar"
+          },
+          "mode": {
+            "name": "Schemaläggningsläge",
+            "state": {
+              "threshold": "Prisgräns",
+              "cheapest_contiguous": "En sammanhängande körning",
+              "cheapest_split": "Dela upp i billigare körningar"
+            }
+          },
+          "window_start": {
+            "name": "Tidsfönstret öppnar"
+          },
+          "window_end": {
+            "name": "Tidsfönstret stänger"
+          },
+          "weekdays": {
+            "name": "Veckodagar"
+          },
+          "required_duration_minutes": {
+            "name": "Begärd körtid (min)"
+          },
+          "min_run_minutes": {
+            "name": "Kortaste körning (min)"
+          },
+          "price_ceiling_per_kwh": {
+            "name": "Pristak"
+          },
+          "fallback": {
+            "name": "Prioritet vid konflikt",
+            "state": {
+              "price": "Behåll prisgränsen",
+              "deadline": "Prioritera tillräcklig drifttid"
+            }
+          },
+          "deadline": {
+            "name": "Sluttid"
+          },
+          "provider": {
+            "name": "Priskälla"
+          },
+          "calculated_at": {
+            "name": "Senast beräknad"
+          },
+          "last_success": {
+            "name": "Senaste lyckade uppdatering"
+          },
+          "selected_run_count": {
+            "name": "Valda körningar"
+          },
+          "selected_periods": {
+            "name": "Valda perioder"
+          },
+          "occurrence_end": {
+            "name": "Schematidsfönstret stänger"
+          },
+          "available": {
+            "name": "Data tillgängliga"
+          },
+          "active": {
+            "name": "Signal aktiv"
+          },
+          "warnings": {
+            "name": "Varningskoder"
+          }
+        }
+      },
+      "price_data_status": {
+        "name": "Schemastatus",
+        "state": {
+          "active": "Aktiv",
+          "scheduled": "Schemalagd",
+          "no_prices": "Väntar på prisdata",
+          "no_window": "Utanför tidsfönstret",
+          "price_ceiling": "Prisgränsen hindrar schemat",
+          "insufficient_duration": "Otillräcklig tid",
+          "source_unavailable": "Priskällan är otillgänglig",
+          "invalid_data": "Ogiltiga prisdata",
+          "above_threshold": "Över prisgränsen",
+          "waiting_for_prices": "Väntar på priser",
+          "deadline": "Körningen ryms inte före sluttiden",
+          "constraints_unsatisfied": "Inget schema uppfyller inställningarna",
+          "completed": "Klart för det här tidsfönstret"
+        },
+        "state_attributes": {
+          "available": {
+            "name": "Data tillgängliga"
+          },
+          "status": {
+            "name": "Status",
+            "state": {
+              "active": "Aktiv",
+              "scheduled": "Schemalagd",
+              "no_prices": "Väntar på prisdata",
+              "no_window": "Utanför tidsfönstret",
+              "price_ceiling": "Prisgränsen hindrar schemat",
+              "insufficient_duration": "Otillräcklig tid",
+              "source_unavailable": "Priskällan är otillgänglig",
+              "invalid_data": "Ogiltiga prisdata",
+              "above_threshold": "Över prisgränsen",
+              "waiting_for_prices": "Väntar på priser",
+              "deadline": "Körningen ryms inte före sluttiden",
+              "constraints_unsatisfied": "Inget schema uppfyller inställningarna",
+              "completed": "Klart för det här tidsfönstret"
+            }
+          },
+          "active": {
+            "name": "Signal aktiv"
+          },
+          "reason_code": {
+            "name": "Skäl till beslutet",
+            "state": {
+              "no_eligible_prices": "Det finns inga priser för det valda tidsfönstret.",
+              "price_at_or_below_limit": "Det aktuella priset är högst den valda gränsen.",
+              "no_qualifying_price_now": "Ingen prisperiod uppfyller villkoren just nu.",
+              "no_applicable_window": "Inget dagligt tidsfönster är tillämpligt.",
+              "waiting_for_window_prices": "Väntar på priser för hela tidsfönstret.",
+              "no_full_interval_in_window": "Ingen hel prisperiod ryms i tidsfönstret.",
+              "no_future_prices": "Det finns inga kommande prisperioder.",
+              "price_ceiling_relaxed": "Schemat överskrider pristaket för att hinna klart i tid.",
+              "deadline_relaxed": "Schemat följer pristaket och körningen fortsätter efter sluttiden.",
+              "constraints_unsatisfied": "Pristaket och sluttiden kan inte uppfyllas samtidigt.",
+              "price_ceiling": "Pristaket hindrar den begärda körtiden.",
+              "deadline": "Körtiden ryms inte före sluttiden.",
+              "insufficient_duration": "Det finns inte tillräckligt med tid som uppfyller villkoren.",
+              "cheapest_intervals_selected": "De billigaste perioderna som uppfyller villkoren valdes.",
+              "waiting_for_current_price": "Väntar på priset för den pågående perioden.",
+              "above_threshold": "Det aktuella priset överskrider din gräns.",
+              "outside_allowed_window": "Priset är inom gränsen. Det tillåtna tidsfönstret är stängt.",
+              "schedule_locked": "Det valda schemat ligger fast till planerat slut.",
+              "source_unavailable": "Den valda priskällan är inte tillgänglig.",
+              "invalid_data": "Priskällan gav ogiltiga eller ofullständiga uppgifter."
+            }
+          },
+          "error_code": {
+            "name": "Felkod"
+          },
+          "current_price": {
+            "name": "Aktuellt pris"
+          },
+          "currency": {
+            "name": "Valuta"
+          },
+          "threshold_price_per_kwh": {
+            "name": "Prisgräns"
+          },
+          "threshold_comparison": {
+            "name": "Pris jämfört med gränsen",
+            "state": {
+              "at_or_below": "Högst prisgränsen",
+              "above": "Över prisgränsen"
+            }
+          },
+          "mode": {
+            "name": "Schemaläggningsläge",
+            "state": {
+              "threshold": "Prisgräns",
+              "cheapest_contiguous": "En sammanhängande körning",
+              "cheapest_split": "Dela upp i billigare körningar"
+            }
+          },
+          "window_start": {
+            "name": "Tidsfönstret öppnar"
+          },
+          "window_end": {
+            "name": "Tidsfönstret stänger"
+          },
+          "weekdays": {
+            "name": "Veckodagar"
+          },
+          "required_duration_minutes": {
+            "name": "Begärd körtid (min)"
+          },
+          "min_run_minutes": {
+            "name": "Kortaste körning (min)"
+          },
+          "price_ceiling_per_kwh": {
+            "name": "Pristak"
+          },
+          "fallback": {
+            "name": "Prioritet vid konflikt",
+            "state": {
+              "price": "Behåll prisgränsen",
+              "deadline": "Prioritera tillräcklig drifttid"
+            }
+          },
+          "deadline": {
+            "name": "Sluttid"
+          },
+          "provider": {
+            "name": "Priskälla"
+          },
+          "next_change": {
+            "name": "Nästa kontroll"
+          },
+          "calculated_at": {
+            "name": "Senast beräknad"
+          },
+          "last_success": {
+            "name": "Senaste lyckade uppdatering"
+          }
+        }
+      },
+      "next_price_start": {
+        "name": "Nästa körning börjar"
+      },
+      "next_price_end": {
+        "name": "Nästa körning slutar"
+      },
+      "decision_reason": {
+        "name": "Avstängningsbeslut",
+        "state": {
+          "source_unavailable": "Priskällan är otillgänglig",
+          "invalid_data": "Prisdata kunde inte användas",
+          "preheat": "Schemalagd förvärmning",
+          "shutdown": "Schemalagd avstängning",
+          "recovery": "Schemalagd återhämtning",
+          "waiting_for_prices": "Väntar på fler priser",
+          "next_cutoff_selected": "Nästa avstängning schemalagd",
+          "no_cutoff_selected": "Ingen lämplig avstängning"
+        },
+        "state_attributes": {
+          "data_status": {
+            "name": "Prisdatastatus",
+            "state": {
+              "ready": "Klar",
+              "waiting_for_prices": "Väntar på priser",
+              "no_profitable_periods": "Inga lämpliga perioder",
+              "source_unavailable": "Priskällan är otillgänglig",
+              "invalid_data": "Ogiltiga prisdata"
+            }
+          },
+          "next_change": {
+            "name": "Nästa kontroll"
+          },
+          "locked": {
+            "name": "Perioden är låst"
+          },
+          "locked_settings_known": {
+            "name": "Inställningarna för låst period är kända"
+          },
+          "effective_settings": {
+            "name": "Gällande inställningar"
+          },
+          "locked_effective_settings": {
+            "name": "Inställningar för låst period"
+          },
+          "warnings": {
+            "name": "Varningskoder"
+          }
+        }
+      }
+    },
+    "binary_sensor": {
+      "cutoff_active": {
+        "name": "Avstängning aktiv",
+        "state": {
+          "on": "Aktiv",
+          "off": "Inaktiv"
+        }
+      },
+      "price_active": {
+        "name": "Använd el nu"
+      }
+    }
+  },
+  "common": {
+    "profile_name_heating": "Värmeoptimering",
+    "profile_name_cheap_now": "Billig el",
+    "profile_name_water_heater": "Varmvattenberedare",
+    "profile_name_appliance": "Maskinprogram",
+    "profile_name_ev": "Elbilsladdning"
+  }
+}

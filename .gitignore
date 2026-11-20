@@ -216,6 +216,9 @@ home-assistant.log
 home-assistant_v2.db
 OZW_Log.txt
 
+# Local Home Assistant development instances (may contain credentials/state)
+/work/
+
 # IDE - additional
 .vscode/
 .idea/

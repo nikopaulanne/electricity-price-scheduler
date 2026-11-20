@@ -1,0 +1,878 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Szenario und Preisquelle auswählen",
+        "description": "Wählen Sie, wofür Sie den Strompreis verwenden möchten. Wenn nur eine Strompreisquelle verfügbar ist, ist sie vorausgewählt.",
+        "data": {
+          "scenario": "Wofür möchten Sie den Strompreis verwenden?",
+          "price_entity_id": "Nordpool-Preissensor",
+          "currency": "Währung",
+          "unit_override": "Preiseinheit des Sensors"
+        }
+      },
+      "settings": {
+        "title": "Zeitplan einrichten",
+        "description": "Die Preise werden in {currency}/kWh verglichen. Der Mindestpreisunterschied wird in der ausgewählten Währung pro kWh angegeben. Die Einsparung ist eine Schätzung für eine Referenzlast von 1 kW und keine Garantie für Ihre Stromrechnung.",
+        "data": {
+          "profile_name": "Profilname",
+          "max_cutoff_minutes": "Maximale Abschaltdauer",
+          "min_price_diff_per_kwh": "Mindestpreisunterschied pro kWh",
+          "max_periods": "Maximale Anzahl Zeitpläne je Zeitraum",
+          "multiplier_mode": "Modell für Vorheizen und Wiederaufheizen",
+          "preheat_factor": "Fester Vorheizfaktor",
+          "recovery_factor": "Fester Wiederaufheizfaktor",
+          "temperature_entity_id": "Außentemperatursensor"
+        }
+      },
+      "reconfigure": {
+        "title": "Nordpool-Preisquelle ändern",
+        "description": "Wählen und prüfen Sie einen Ersatzsensor. Ändert sich dessen Währung, geben Sie einen neuen Grenzwert in dieser Währung ein. Es wird kein Wechselkurs angewendet.",
+        "data": {
+          "price_entity_id": "Nordpool-Preissensor",
+          "currency": "Währung",
+          "unit_override": "Preiseinheit des Sensors",
+          "min_price_diff_per_kwh": "Neuer Mindestpreisunterschied pro kWh",
+          "threshold_price_per_kwh": "Preisgrenze für günstigen Strom",
+          "price_ceiling_per_kwh": "Höchstpreis"
+        }
+      },
+      "price_setup": {
+        "title": "Strompreisprofil einrichten",
+        "description": "Preise werden in {currency}/kWh angegeben. Bei Euro entspricht ein Preis von 5 Cent/kWh dem Wert 0,05. Wenn der Zeitraum über Mitternacht hinausgeht, muss die Endzeit früher als die Startzeit liegen.",
+        "data": {
+          "profile_name": "Profilname",
+          "threshold_price_per_kwh": "Preisgrenze für günstigen Strom",
+          "required_duration_minutes": "Gesamte Laufzeit",
+          "window_start": "Frühester Start",
+          "window_end": "Ende spätestens",
+          "weekdays": "Wochentage",
+          "mode": "Laufzeit einplanen",
+          "min_run_minutes": "Kürzester Lauf bei Aufteilung",
+          "price_ceiling_per_kwh": "Höchstpreis",
+          "fallback": "Wenn die Preisgrenze eine ausreichende Laufzeit verhindert"
+        }
+      },
+      "price_preview_empty": {
+        "title": "Profil überprüfen",
+        "description": "Für die aktuellen Preise und Einstellungen wurde kein Lauf ausgewählt. Prüfen Sie die Einstellungen oder speichern Sie das Profil, um seinen aktuellen Status zu sehen.\n\nÖffnen Sie das gespeicherte Profil, um das Signal und den Zeitplan zu prüfen. Lesen Sie, [wie Sie das Signal in einer Automation verwenden]({automation_guide_url}).",
+        "data": {
+          "edit": "Zurück zu den Einstellungen"
+        }
+      },
+      "price_preview_unavailable": {
+        "title": "Profil überprüfen",
+        "description": "Die Vorschau ist nicht verfügbar. Prüfen Sie, ob die ausgewählte Preisquelle aktuelle Preise enthält.\n\nÖffnen Sie das gespeicherte Profil, um das Signal und den Zeitplan zu prüfen. Lesen Sie, [wie Sie das Signal in einer Automation verwenden]({automation_guide_url}).",
+        "data": {
+          "edit": "Zurück zu den Einstellungen"
+        }
+      },
+      "price_preview_threshold_active": {
+        "title": "Profil überprüfen",
+        "description": "Aktueller Preis: {current_price} {currency}/kWh. Ihre Preisgrenze: {threshold} {currency}/kWh. **Jetzt Strom nutzen** wäre eingeschaltet.\n\nÖffnen Sie das gespeicherte Profil, um das Signal und den Zeitplan zu prüfen. Lesen Sie, [wie Sie das Signal in einer Automation verwenden]({automation_guide_url}).",
+        "data": {
+          "edit": "Zurück zu den Einstellungen"
+        }
+      },
+      "price_preview_threshold_scheduled": {
+        "title": "Profil überprüfen",
+        "description": "Das Signal ist derzeit ausgeschaltet. Der nächste Preis, der höchstens Ihrer Grenze von {threshold} {currency}/kWh entspricht, gilt ab {next_start} (Ortszeit von Home Assistant).\n\nÖffnen Sie das gespeicherte Profil, um das Signal und den Zeitplan zu prüfen. Lesen Sie, [wie Sie das Signal in einer Automation verwenden]({automation_guide_url}).",
+        "data": {
+          "edit": "Zurück zu den Einstellungen"
+        }
+      },
+      "price_preview_threshold_above": {
+        "title": "Profil überprüfen",
+        "description": "Aktueller Preis: {current_price} {currency}/kWh. Damit liegt er über Ihrer Grenze von {threshold} {currency}/kWh. Das Signal wäre ausgeschaltet.\n\nÖffnen Sie das gespeicherte Profil, um das Signal und den Zeitplan zu prüfen. Lesen Sie, [wie Sie das Signal in einer Automation verwenden]({automation_guide_url}).",
+        "data": {
+          "edit": "Zurück zu den Einstellungen"
+        }
+      },
+      "price_preview_schedule_active": {
+        "title": "Profil überprüfen",
+        "description": "Der erste Lauf ist jetzt vorgesehen: {start} – {end}. Geplante Laufzeit: {planned_duration} Minuten.\n\nÖffnen Sie das gespeicherte Profil, um das Signal und den Zeitplan zu prüfen. Lesen Sie, [wie Sie das Signal in einer Automation verwenden]({automation_guide_url}).",
+        "data": {
+          "edit": "Zurück zu den Einstellungen"
+        }
+      },
+      "price_preview_schedule_scheduled": {
+        "title": "Profil überprüfen",
+        "description": "Erster Lauf: {start} – {end} (Ortszeit von Home Assistant). Der Zeitplan umfasst {planned_duration} der angeforderten {required_duration} Minuten.\n\nÖffnen Sie das gespeicherte Profil, um das Signal und den Zeitplan zu prüfen. Lesen Sie, [wie Sie das Signal in einer Automation verwenden]({automation_guide_url}).",
+        "data": {
+          "edit": "Zurück zu den Einstellungen"
+        }
+      },
+      "price_preview_waiting": {
+        "title": "Profil überprüfen",
+        "description": "Es fehlen Preise für dieses Profil. Nach dem Speichern wird das Profil aktualisiert, sobald die Quelle die Preise liefert.\n\nÖffnen Sie das gespeicherte Profil, um das Signal und den Zeitplan zu prüfen. Lesen Sie, [wie Sie das Signal in einer Automation verwenden]({automation_guide_url}).",
+        "data": {
+          "edit": "Zurück zu den Einstellungen"
+        }
+      },
+      "price_preview_price_ceiling": {
+        "title": "Profil überprüfen",
+        "description": "Der Höchstpreis verhindert einen vollständigen Zeitplan. Sie können die Preisgrenze beibehalten oder ändern.\n\nÖffnen Sie das gespeicherte Profil, um das Signal und den Zeitplan zu prüfen. Lesen Sie, [wie Sie das Signal in einer Automation verwenden]({automation_guide_url}).",
+        "data": {
+          "edit": "Zurück zu den Einstellungen"
+        }
+      },
+      "price_preview_deadline": {
+        "title": "Profil überprüfen",
+        "description": "Die erforderliche Laufzeit passt nicht vor den spätesten Endzeitpunkt. Versuchen Sie einen früheren Start, ein späteres Ende oder eine kürzere Laufzeit.\n\nÖffnen Sie das gespeicherte Profil, um das Signal und den Zeitplan zu prüfen. Lesen Sie, [wie Sie das Signal in einer Automation verwenden]({automation_guide_url}).",
+        "data": {
+          "edit": "Zurück zu den Einstellungen"
+        }
+      },
+      "price_preview_insufficient_duration": {
+        "title": "Profil überprüfen",
+        "description": "Für den angeforderten Lauf steht nicht genügend geeignete Zeit zur Verfügung. Prüfen Sie Laufzeit und Zeitfenster.\n\nÖffnen Sie das gespeicherte Profil, um das Signal und den Zeitplan zu prüfen. Lesen Sie, [wie Sie das Signal in einer Automation verwenden]({automation_guide_url}).",
+        "data": {
+          "edit": "Zurück zu den Einstellungen"
+        }
+      },
+      "price_preview_constraints_unsatisfied": {
+        "title": "Profil überprüfen",
+        "description": "Mit den aktuellen Preisen lassen sich nicht alle Einstellungen gleichzeitig erfüllen. Prüfen Sie Höchstpreis, Laufzeit und spätesten Endzeitpunkt.\n\nÖffnen Sie das gespeicherte Profil, um das Signal und den Zeitplan zu prüfen. Lesen Sie, [wie Sie das Signal in einer Automation verwenden]({automation_guide_url}).",
+        "data": {
+          "edit": "Zurück zu den Einstellungen"
+        }
+      },
+      "price_preview_no_eligible": {
+        "title": "Profil überprüfen",
+        "description": "Im ausgewählten Zeitfenster gibt es keine Intervalle mit Preisen. Prüfen Sie Start- und Endzeit.\n\nÖffnen Sie das gespeicherte Profil, um das Signal und den Zeitplan zu prüfen. Lesen Sie, [wie Sie das Signal in einer Automation verwenden]({automation_guide_url}).",
+        "data": {
+          "edit": "Zurück zu den Einstellungen"
+        }
+      },
+      "market_source": {
+        "title": "Szenario und Preisquelle auswählen",
+        "description": "Wählen Sie, wofür Sie den Strompreis verwenden möchten. Wenn nur eine Strompreisquelle verfügbar ist, ist sie vorausgewählt. Prüfen Sie vor dem Festlegen einer Preisgrenze, ob die Preise Steuern und Gebühren enthalten.",
+        "data": {
+          "scenario": "Wofür möchten Sie den Strompreis verwenden?",
+          "currency": "Währung",
+          "unit_override": "Preiseinheit des Sensors",
+          "price_source": "Preisquelle",
+          "home_name": "Name des Tibber-Haushalts"
+        }
+      },
+      "market_reconfigure": {
+        "title": "Preisquelle ändern",
+        "description": "Wählen und prüfen Sie eine Ersatzquelle. Ändert sich die Währung, geben Sie einen neuen Grenzwert ein.",
+        "data": {
+          "currency": "Währung",
+          "unit_override": "Preiseinheit des Sensors",
+          "min_price_diff_per_kwh": "Neuer Mindestpreisunterschied pro kWh",
+          "threshold_price_per_kwh": "Preisgrenze für günstigen Strom",
+          "price_ceiling_per_kwh": "Höchstpreis",
+          "price_source": "Preisquelle",
+          "home_name": "Name des Tibber-Haushalts"
+        }
+      }
+    },
+    "error": {
+      "base": "Die ausgewählte Quelle oder die Einstellungen konnten nicht geprüft werden.",
+      "price_entity_id": "Wählen Sie einen verfügbaren Nordpool-Sensor.",
+      "currency": "Wählen Sie die Währung dieses Sensors.",
+      "unit_override": "Wählen Sie die Preiseinheit des Sensors.",
+      "min_price_diff_per_kwh": "Geben Sie einen neuen Grenzwert ein, da sich die Währung der Quelle geändert hat.",
+      "source_unavailable": "Die ausgewählte Preisquelle ist nicht verfügbar oder enthält keine aktuellen Daten.",
+      "invalid_source_data": "Die Preisdaten konnten nicht gelesen werden. Prüfen Sie Preise, Zeitstempel, Währung und Preiseinheit der ausgewählten Quelle.",
+      "unit_override_required": "Die Preiseinheit konnte nicht ermittelt werden. Wählen Sie die von der Preisquelle angegebene Einheit.",
+      "currency_required": "Wählen Sie die Währung der Quellpreise.",
+      "invalid_currency": "Wählen Sie einen unterstützten Währungscode.",
+      "currency_mismatch": "Die eingestellte Währung stimmt nicht mit dem ausgewählten Sensor überein.",
+      "currency_changed_threshold_required": "Geben Sie vor dem Ändern der Quelle eine neue Preisgrenze in der neuen Währung ein.",
+      "invalid_profile_name": "Geben Sie einen Profilnamen ein.",
+      "invalid_settings": "Mindestens eine Einstellung des Optimierers ist ungültig.",
+      "invalid_max_cutoff": "Wählen Sie eine Dauer zwischen 30 Minuten und 6 Stunden in Schritten von 15 Minuten.",
+      "invalid_max_periods": "Wählen Sie 1 bis 6 Zeitpläne.",
+      "invalid_min_price_diff": "Geben Sie einen endlichen, nicht negativen Preisunterschied in der ausgewählten Währung pro kWh ein.",
+      "invalid_preheat_factor": "Wählen Sie einen Vorheizfaktor zwischen 1 und 3.",
+      "invalid_recovery_factor": "Wählen Sie einen Wiederaufheizfaktor zwischen 1 und 3.",
+      "invalid_multiplier_mode": "Wählen Sie eines der verfügbaren Vorheizmodelle.",
+      "temperature_sensor_required": "Wählen Sie für temperaturabhängige Faktoren einen Außentemperatursensor.",
+      "invalid_temperature_sensor": "Wählen Sie einen verfügbaren numerischen Temperatursensor in °C, °F oder K.",
+      "invalid_window": "Wählen Sie unterschiedliche Start- und Endzeiten oder lassen Sie beide leer, sofern dies optional ist.",
+      "invalid_schedule_duration": "Wählen Sie Laufzeiten in Schritten von 15 Minuten. Der kürzeste Lauf darf nicht länger als die gesamte Laufzeit sein.",
+      "invalid_helper": "Wählen Sie einen Zahlenhelfer und seine Einheit.",
+      "invalid_price_value": "Geben Sie einen gültigen Preis in der neuen Währung ein.",
+      "currency_change_with_price_helper": "Leeren Sie in den Profileinstellungen das Feld für den Helfer für den Mindestpreisunterschied, bevor Sie die Währung wechseln.",
+      "tibber_home_required": "Es gibt mehrere aktive Tibber-Haushalte. Geben Sie den Namen des Haushalts so ein, wie er in Tibber angezeigt wird.",
+      "tibber_home_not_found": "Prüfen Sie den Namen des Tibber-Haushalts einschließlich der Schreibweise.",
+      "threshold_only_source": "Amber Electric funktioniert nur mit „Jetzt günstig“. Wählen Sie „Jetzt günstig“ oder eine andere Preisquelle."
+    },
+    "abort": {
+      "reconfigure_successful": "Die Preisquelle wurde aktualisiert.",
+      "invalid_scenario": "Wählen Sie ein unterstütztes Szenario.",
+      "no_price_sources": "Richten Sie in Home Assistant eine unterstützte Preisquelle ein und versuchen Sie es erneut."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Einstellungen des Optimierers",
+        "description": "Preise und Grenzwerte werden in {currency}/kWh angegeben. Die geschätzte Einsparung basiert auf einer Referenzlast von 1 kW.",
+        "data": {
+          "max_cutoff_minutes": "Maximale Abschaltdauer",
+          "min_price_diff_per_kwh": "Mindestpreisunterschied pro kWh",
+          "max_periods": "Maximale Anzahl Zeitpläne je Zeitraum",
+          "multiplier_mode": "Modell für Vorheizen und Wiederaufheizen",
+          "preheat_factor": "Fester Vorheizfaktor",
+          "recovery_factor": "Fester Wiederaufheizfaktor",
+          "temperature_entity_id": "Außentemperatursensor",
+          "max_cutoff_entity_id": "Helfer für maximale Dauer (optional)",
+          "max_cutoff_entity_unit": "Einheit des Dauerhelfers",
+          "min_price_diff_entity_id": "Helfer für Mindestpreisunterschied (optional)",
+          "min_price_diff_entity_unit": "Einheit des Preisunterschiedshelfers"
+        }
+      },
+      "price_options": {
+        "title": "Einstellungen des Preisprofils",
+        "description": "Preiseinheit: {currency}/kWh. Lassen Sie die Wochentage leer, um jeden Tag einzubeziehen. Bei Zeitplänen über Nacht gilt der Wochentag am Beginn des Zeitfensters.",
+        "data": {
+          "threshold_price_per_kwh": "Preisgrenze für günstigen Strom",
+          "required_duration_minutes": "Gesamte Laufzeit",
+          "window_start": "Frühester Start",
+          "window_end": "Ende spätestens",
+          "weekdays": "Wochentage",
+          "mode": "Laufzeit einplanen",
+          "min_run_minutes": "Kürzester Lauf bei Aufteilung",
+          "price_ceiling_per_kwh": "Höchstpreis",
+          "fallback": "Wenn die Preisgrenze eine ausreichende Laufzeit verhindert"
+        }
+      }
+    },
+    "error": {
+      "base": "Die Einstellungen konnten nicht geprüft werden.",
+      "invalid_settings": "Mindestens eine Einstellung des Optimierers ist ungültig.",
+      "invalid_max_cutoff": "Wählen Sie eine Dauer zwischen 30 Minuten und 6 Stunden in Schritten von 15 Minuten.",
+      "invalid_max_periods": "Wählen Sie 1 bis 6 Zeitpläne.",
+      "invalid_min_price_diff": "Geben Sie einen endlichen, nicht negativen Preisunterschied in der ausgewählten Währung pro kWh ein.",
+      "invalid_preheat_factor": "Wählen Sie einen Vorheizfaktor zwischen 1 und 3.",
+      "invalid_recovery_factor": "Wählen Sie einen Wiederaufheizfaktor zwischen 1 und 3.",
+      "invalid_multiplier_mode": "Wählen Sie eines der verfügbaren Vorheizmodelle.",
+      "temperature_sensor_required": "Wählen Sie für temperaturabhängige Faktoren einen Außentemperatursensor.",
+      "invalid_temperature_sensor": "Wählen Sie einen verfügbaren numerischen Temperatursensor in °C, °F oder K.",
+      "invalid_window": "Wählen Sie unterschiedliche Start- und Endzeiten oder lassen Sie beide leer, sofern dies optional ist.",
+      "invalid_schedule_duration": "Wählen Sie Laufzeiten in Schritten von 15 Minuten. Der kürzeste Lauf darf nicht länger als die gesamte Laufzeit sein.",
+      "invalid_profile_name": "Geben Sie einen Profilnamen ein.",
+      "invalid_helper": "Wählen Sie einen Zahlenhelfer und seine Einheit.",
+      "invalid_price_value": "Geben Sie einen gültigen Preis in der neuen Währung ein.",
+      "currency_change_with_price_helper": "Leeren Sie in den Profileinstellungen das Feld für den Helfer für den Mindestpreisunterschied, bevor Sie die Währung wechseln."
+    }
+  },
+  "selector": {
+    "multiplier_mode": {
+      "options": {
+        "fixed": "Feste Faktoren",
+        "outdoor_temperature": "Faktoren an Außentemperatur anpassen"
+      }
+    },
+    "scenario": {
+      "options": {
+        "heating": "Heizung und Wärmepumpe",
+        "cheap_now": "Jetzt günstig",
+        "water_heater": "Warmwasserbereiter",
+        "appliance": "Gerätelauf",
+        "ev": "Laden eines Elektroautos"
+      }
+    },
+    "duration_helper_unit": {
+      "options": {
+        "h": "Stunden",
+        "min": "Minuten"
+      }
+    },
+    "price_helper_unit": {
+      "options": {
+        "currency_per_kwh": "Währung pro kWh (z. B. EUR/kWh)",
+        "subunit_per_kwh": "Untereinheiten pro kWh (z. B. Cent/kWh)"
+      }
+    },
+    "schedule_mode": {
+      "options": {
+        "cheapest_contiguous": "Ein zusammenhängender Lauf",
+        "cheapest_split": "Auf mehrere günstigere Läufe aufteilen"
+      }
+    },
+    "fallback": {
+      "options": {
+        "price": "Preisgrenze beibehalten",
+        "deadline": "Ausreichende Laufzeit bevorzugen"
+      }
+    },
+    "weekdays": {
+      "options": {
+        "mon": "Montag",
+        "tue": "Dienstag",
+        "wed": "Mittwoch",
+        "thu": "Donnerstag",
+        "fri": "Freitag",
+        "sat": "Samstag",
+        "sun": "Sonntag"
+      }
+    }
+  },
+  "entity": {
+    "sensor": {
+      "phase": {
+        "name": "Abschaltphase",
+        "state": {
+          "normal": "Normal",
+          "preheat": "Vorheizen",
+          "shutdown": "Abschaltung",
+          "recovery": "Wiederaufheizen",
+          "unavailable": "Nicht verfügbar"
+        },
+        "state_attributes": {
+          "next_change": {
+            "name": "Nächste Prüfung"
+          },
+          "locked": {
+            "name": "Zeitraum festgelegt"
+          },
+          "locked_settings_known": {
+            "name": "Einstellungen des festgelegten Zeitraums bekannt"
+          },
+          "locked_period": {
+            "name": "Festgelegter Zeitraum"
+          },
+          "locked_effective_settings": {
+            "name": "Einstellungen des festgelegten Zeitraums"
+          },
+          "decision_reason": {
+            "name": "Entscheidungsgrund",
+            "state": {
+              "source_unavailable": "Preisquelle nicht verfügbar",
+              "invalid_data": "Preisdaten konnten nicht verwendet werden",
+              "preheat": "Vorheizen eingeplant",
+              "shutdown": "Abschaltung eingeplant",
+              "recovery": "Wiederaufheizen eingeplant",
+              "waiting_for_prices": "Warten auf weitere Preise",
+              "next_cutoff_selected": "Nächste Abschaltung eingeplant",
+              "no_cutoff_selected": "Keine geeignete Abschaltung"
+            }
+          },
+          "effective_settings": {
+            "name": "Aktuell wirksame Einstellungen"
+          },
+          "warnings": {
+            "name": "Warncodes"
+          }
+        }
+      },
+      "next_cutoff_start": {
+        "name": "Nächste Abschaltung beginnt"
+      },
+      "next_cutoff_end": {
+        "name": "Nächste Abschaltung endet"
+      },
+      "schedule": {
+        "name": "Abschaltzeitplan",
+        "state_attributes": {
+          "currency": {
+            "name": "Währung"
+          },
+          "provider": {
+            "name": "Preisquelle"
+          },
+          "data_status": {
+            "name": "Preisstatus",
+            "state": {
+              "ready": "Bereit",
+              "waiting_for_prices": "Warten auf Preise",
+              "no_profitable_periods": "Keine geeigneten Zeiträume",
+              "source_unavailable": "Preisquelle nicht verfügbar",
+              "invalid_data": "Ungültige Preisdaten"
+            }
+          },
+          "next_change": {
+            "name": "Nächste Prüfung"
+          },
+          "locked": {
+            "name": "Zeitraum festgelegt"
+          },
+          "locked_settings_known": {
+            "name": "Einstellungen des festgelegten Zeitraums bekannt"
+          },
+          "locked_period": {
+            "name": "Festgelegter Zeitraum"
+          },
+          "effective_settings": {
+            "name": "Aktuell wirksame Einstellungen"
+          },
+          "locked_effective_settings": {
+            "name": "Einstellungen des festgelegten Zeitraums"
+          },
+          "calculated_at": {
+            "name": "Zuletzt berechnet"
+          },
+          "last_success": {
+            "name": "Letzte erfolgreiche Aktualisierung"
+          },
+          "warnings": {
+            "name": "Warncodes"
+          }
+        }
+      },
+      "data_status": {
+        "name": "Status der Preisdaten",
+        "state": {
+          "ready": "Bereit",
+          "waiting_for_prices": "Warten auf Preise",
+          "no_profitable_periods": "Keine geeigneten Zeiträume",
+          "source_unavailable": "Preisquelle nicht verfügbar",
+          "invalid_data": "Ungültige Preisdaten"
+        },
+        "state_attributes": {
+          "available": {
+            "name": "Daten verfügbar"
+          },
+          "error_code": {
+            "name": "Fehlercode"
+          },
+          "last_success": {
+            "name": "Letzte erfolgreiche Aktualisierung"
+          },
+          "calculated_at": {
+            "name": "Zuletzt berechnet"
+          },
+          "warnings": {
+            "name": "Warncodes"
+          }
+        }
+      },
+      "modeled_savings_per_kw": {
+        "name": "Geschätzte Einsparung pro kW"
+      },
+      "current_price": {
+        "name": "Aktueller Preis",
+        "state_attributes": {
+          "reason_code": {
+            "name": "Entscheidungsgrund",
+            "state": {
+              "no_eligible_prices": "Für das gewählte Zeitfenster liegen keine Preise vor.",
+              "price_at_or_below_limit": "Der aktuelle Preis liegt höchstens an Ihrer Preisgrenze.",
+              "no_qualifying_price_now": "Derzeit erfüllt kein Preisintervall die Bedingungen.",
+              "no_applicable_window": "Es gibt kein passendes tägliches Zeitfenster.",
+              "waiting_for_window_prices": "Die Preise für das gesamte Zeitfenster stehen noch aus.",
+              "no_full_interval_in_window": "Kein vollständiges Preisintervall passt in das Zeitfenster.",
+              "no_future_prices": "Es liegen keine Preise für kommende Intervalle vor.",
+              "price_ceiling_relaxed": "Der Zeitplan überschreitet die Preisobergrenze, um rechtzeitig fertig zu werden.",
+              "deadline_relaxed": "Der Zeitplan hält die Preisobergrenze ein. Der Betrieb dauert über den Endtermin hinaus.",
+              "constraints_unsatisfied": "Preisobergrenze und Endtermin lassen sich nicht gleichzeitig einhalten.",
+              "price_ceiling": "Die Preisobergrenze verhindert die gewünschte Laufzeit.",
+              "deadline": "Die gewünschte Laufzeit passt nicht vor den Endtermin.",
+              "insufficient_duration": "Für die gewünschte Laufzeit steht nicht genug passende Zeit zur Verfügung.",
+              "cheapest_intervals_selected": "Die günstigsten passenden Intervalle wurden ausgewählt.",
+              "waiting_for_current_price": "Der Preis für das aktuelle Intervall steht noch aus.",
+              "above_threshold": "Der aktuelle Preis liegt über Ihrer Preisgrenze.",
+              "outside_allowed_window": "Der Preis liegt innerhalb Ihrer Grenze. Das erlaubte Zeitfenster ist geschlossen.",
+              "schedule_locked": "Der gewählte Zeitplan bleibt bis zum geplanten Ende bestehen.",
+              "source_unavailable": "Die konfigurierte Preisquelle ist nicht verfügbar.",
+              "invalid_data": "Die Preisquelle hat ungültige oder unvollständige Daten geliefert."
+            }
+          },
+          "status": {
+            "name": "Status",
+            "state": {
+              "active": "Aktiv",
+              "scheduled": "Eingeplant",
+              "no_prices": "Warten auf ausreichende Preisdaten",
+              "no_window": "Außerhalb des Zeitfensters",
+              "price_ceiling": "Preisgrenze verhindert den Zeitplan",
+              "insufficient_duration": "Nicht genügend Zeit",
+              "source_unavailable": "Preisquelle nicht verfügbar",
+              "invalid_data": "Ungültige Preisdaten",
+              "above_threshold": "Über der Preisgrenze",
+              "waiting_for_prices": "Warten auf Preise",
+              "deadline": "Der Lauf passt nicht vor den spätesten Endzeitpunkt",
+              "constraints_unsatisfied": "Kein Zeitplan erfüllt die Einstellungen",
+              "completed": "Für dieses Zeitfenster abgeschlossen"
+            }
+          },
+          "active": {
+            "name": "Signal aktiv"
+          },
+          "current_price": {
+            "name": "Aktueller Preis"
+          },
+          "currency": {
+            "name": "Währung"
+          },
+          "threshold_price_per_kwh": {
+            "name": "Preisgrenze"
+          },
+          "threshold_comparison": {
+            "name": "Preis im Vergleich zur Grenze",
+            "state": {
+              "at_or_below": "An oder unter der Preisgrenze",
+              "above": "Über der Preisgrenze"
+            }
+          },
+          "window_start": {
+            "name": "Beginn des Zeitfensters"
+          },
+          "window_end": {
+            "name": "Ende des Zeitfensters"
+          },
+          "provider": {
+            "name": "Preisquelle"
+          },
+          "calculated_at": {
+            "name": "Zuletzt berechnet"
+          },
+          "last_success": {
+            "name": "Letzte erfolgreiche Aktualisierung"
+          }
+        }
+      },
+      "price_schedule": {
+        "name": "Laufzeitplan",
+        "state_attributes": {
+          "reason_code": {
+            "name": "Entscheidungsgrund",
+            "state": {
+              "no_eligible_prices": "Für das gewählte Zeitfenster liegen keine Preise vor.",
+              "price_at_or_below_limit": "Der aktuelle Preis liegt höchstens an Ihrer Preisgrenze.",
+              "no_qualifying_price_now": "Derzeit erfüllt kein Preisintervall die Bedingungen.",
+              "no_applicable_window": "Es gibt kein passendes tägliches Zeitfenster.",
+              "waiting_for_window_prices": "Die Preise für das gesamte Zeitfenster stehen noch aus.",
+              "no_full_interval_in_window": "Kein vollständiges Preisintervall passt in das Zeitfenster.",
+              "no_future_prices": "Es liegen keine Preise für kommende Intervalle vor.",
+              "price_ceiling_relaxed": "Der Zeitplan überschreitet die Preisobergrenze, um rechtzeitig fertig zu werden.",
+              "deadline_relaxed": "Der Zeitplan hält die Preisobergrenze ein. Der Betrieb dauert über den Endtermin hinaus.",
+              "constraints_unsatisfied": "Preisobergrenze und Endtermin lassen sich nicht gleichzeitig einhalten.",
+              "price_ceiling": "Die Preisobergrenze verhindert die gewünschte Laufzeit.",
+              "deadline": "Die gewünschte Laufzeit passt nicht vor den Endtermin.",
+              "insufficient_duration": "Für die gewünschte Laufzeit steht nicht genug passende Zeit zur Verfügung.",
+              "cheapest_intervals_selected": "Die günstigsten passenden Intervalle wurden ausgewählt.",
+              "waiting_for_current_price": "Der Preis für das aktuelle Intervall steht noch aus.",
+              "above_threshold": "Der aktuelle Preis liegt über Ihrer Preisgrenze.",
+              "outside_allowed_window": "Der Preis liegt innerhalb Ihrer Grenze. Das erlaubte Zeitfenster ist geschlossen.",
+              "schedule_locked": "Der gewählte Zeitplan bleibt bis zum geplanten Ende bestehen.",
+              "source_unavailable": "Die konfigurierte Preisquelle ist nicht verfügbar.",
+              "invalid_data": "Die Preisquelle hat ungültige oder unvollständige Daten geliefert."
+            }
+          },
+          "status": {
+            "name": "Status",
+            "state": {
+              "active": "Aktiv",
+              "scheduled": "Eingeplant",
+              "no_prices": "Warten auf ausreichende Preisdaten",
+              "no_window": "Außerhalb des Zeitfensters",
+              "price_ceiling": "Preisgrenze verhindert den Zeitplan",
+              "insufficient_duration": "Nicht genügend Zeit",
+              "source_unavailable": "Preisquelle nicht verfügbar",
+              "invalid_data": "Ungültige Preisdaten",
+              "above_threshold": "Über der Preisgrenze",
+              "waiting_for_prices": "Warten auf Preise",
+              "deadline": "Der Lauf passt nicht vor den spätesten Endzeitpunkt",
+              "constraints_unsatisfied": "Kein Zeitplan erfüllt die Einstellungen",
+              "completed": "Für dieses Zeitfenster abgeschlossen"
+            }
+          },
+          "error_code": {
+            "name": "Fehlercode"
+          },
+          "current_price": {
+            "name": "Aktueller Preis"
+          },
+          "currency": {
+            "name": "Währung"
+          },
+          "threshold_price_per_kwh": {
+            "name": "Preisgrenze"
+          },
+          "threshold_comparison": {
+            "name": "Preis im Vergleich zur Grenze",
+            "state": {
+              "at_or_below": "An oder unter der Preisgrenze",
+              "above": "Über der Preisgrenze"
+            }
+          },
+          "next_change": {
+            "name": "Nächste Prüfung"
+          },
+          "next_period_start": {
+            "name": "Nächster Start"
+          },
+          "next_period_end": {
+            "name": "Nächstes Ende"
+          },
+          "active_period_end": {
+            "name": "Ende des aktuellen Betriebs"
+          },
+          "mode": {
+            "name": "Planungsmodus",
+            "state": {
+              "threshold": "Preisgrenze",
+              "cheapest_contiguous": "Ein zusammenhängender Lauf",
+              "cheapest_split": "Auf mehrere günstigere Läufe aufteilen"
+            }
+          },
+          "window_start": {
+            "name": "Beginn des Zeitfensters"
+          },
+          "window_end": {
+            "name": "Ende des Zeitfensters"
+          },
+          "weekdays": {
+            "name": "Wochentage"
+          },
+          "required_duration_minutes": {
+            "name": "Gewünschte Laufzeit (Min.)"
+          },
+          "min_run_minutes": {
+            "name": "Kürzeste Laufzeit (Min.)"
+          },
+          "price_ceiling_per_kwh": {
+            "name": "Preisobergrenze"
+          },
+          "fallback": {
+            "name": "Vorrang bei Zielkonflikt",
+            "state": {
+              "price": "Preisgrenze beibehalten",
+              "deadline": "Ausreichende Laufzeit bevorzugen"
+            }
+          },
+          "deadline": {
+            "name": "Endtermin"
+          },
+          "provider": {
+            "name": "Preisquelle"
+          },
+          "calculated_at": {
+            "name": "Zuletzt berechnet"
+          },
+          "last_success": {
+            "name": "Letzte erfolgreiche Aktualisierung"
+          },
+          "selected_run_count": {
+            "name": "Ausgewählte Laufzeiten"
+          },
+          "selected_periods": {
+            "name": "Ausgewählte Intervalle"
+          },
+          "occurrence_end": {
+            "name": "Ende des Planungsfensters"
+          },
+          "available": {
+            "name": "Daten verfügbar"
+          },
+          "active": {
+            "name": "Signal aktiv"
+          },
+          "warnings": {
+            "name": "Warncodes"
+          }
+        }
+      },
+      "price_data_status": {
+        "name": "Zeitplanstatus",
+        "state": {
+          "active": "Aktiv",
+          "scheduled": "Eingeplant",
+          "no_prices": "Warten auf ausreichende Preisdaten",
+          "no_window": "Außerhalb des Zeitfensters",
+          "price_ceiling": "Preisgrenze verhindert den Zeitplan",
+          "insufficient_duration": "Nicht genügend Zeit",
+          "source_unavailable": "Preisquelle nicht verfügbar",
+          "invalid_data": "Ungültige Preisdaten",
+          "above_threshold": "Über der Preisgrenze",
+          "waiting_for_prices": "Warten auf Preise",
+          "deadline": "Der Lauf passt nicht vor den spätesten Endzeitpunkt",
+          "constraints_unsatisfied": "Kein Zeitplan erfüllt die Einstellungen",
+          "completed": "Für dieses Zeitfenster abgeschlossen"
+        },
+        "state_attributes": {
+          "available": {
+            "name": "Daten verfügbar"
+          },
+          "status": {
+            "name": "Status",
+            "state": {
+              "active": "Aktiv",
+              "scheduled": "Eingeplant",
+              "no_prices": "Warten auf ausreichende Preisdaten",
+              "no_window": "Außerhalb des Zeitfensters",
+              "price_ceiling": "Preisgrenze verhindert den Zeitplan",
+              "insufficient_duration": "Nicht genügend Zeit",
+              "source_unavailable": "Preisquelle nicht verfügbar",
+              "invalid_data": "Ungültige Preisdaten",
+              "above_threshold": "Über der Preisgrenze",
+              "waiting_for_prices": "Warten auf Preise",
+              "deadline": "Der Lauf passt nicht vor den spätesten Endzeitpunkt",
+              "constraints_unsatisfied": "Kein Zeitplan erfüllt die Einstellungen",
+              "completed": "Für dieses Zeitfenster abgeschlossen"
+            }
+          },
+          "active": {
+            "name": "Signal aktiv"
+          },
+          "reason_code": {
+            "name": "Entscheidungsgrund",
+            "state": {
+              "no_eligible_prices": "Für das gewählte Zeitfenster liegen keine Preise vor.",
+              "price_at_or_below_limit": "Der aktuelle Preis liegt höchstens an Ihrer Preisgrenze.",
+              "no_qualifying_price_now": "Derzeit erfüllt kein Preisintervall die Bedingungen.",
+              "no_applicable_window": "Es gibt kein passendes tägliches Zeitfenster.",
+              "waiting_for_window_prices": "Die Preise für das gesamte Zeitfenster stehen noch aus.",
+              "no_full_interval_in_window": "Kein vollständiges Preisintervall passt in das Zeitfenster.",
+              "no_future_prices": "Es liegen keine Preise für kommende Intervalle vor.",
+              "price_ceiling_relaxed": "Der Zeitplan überschreitet die Preisobergrenze, um rechtzeitig fertig zu werden.",
+              "deadline_relaxed": "Der Zeitplan hält die Preisobergrenze ein. Der Betrieb dauert über den Endtermin hinaus.",
+              "constraints_unsatisfied": "Preisobergrenze und Endtermin lassen sich nicht gleichzeitig einhalten.",
+              "price_ceiling": "Die Preisobergrenze verhindert die gewünschte Laufzeit.",
+              "deadline": "Die gewünschte Laufzeit passt nicht vor den Endtermin.",
+              "insufficient_duration": "Für die gewünschte Laufzeit steht nicht genug passende Zeit zur Verfügung.",
+              "cheapest_intervals_selected": "Die günstigsten passenden Intervalle wurden ausgewählt.",
+              "waiting_for_current_price": "Der Preis für das aktuelle Intervall steht noch aus.",
+              "above_threshold": "Der aktuelle Preis liegt über Ihrer Preisgrenze.",
+              "outside_allowed_window": "Der Preis liegt innerhalb Ihrer Grenze. Das erlaubte Zeitfenster ist geschlossen.",
+              "schedule_locked": "Der gewählte Zeitplan bleibt bis zum geplanten Ende bestehen.",
+              "source_unavailable": "Die konfigurierte Preisquelle ist nicht verfügbar.",
+              "invalid_data": "Die Preisquelle hat ungültige oder unvollständige Daten geliefert."
+            }
+          },
+          "error_code": {
+            "name": "Fehlercode"
+          },
+          "current_price": {
+            "name": "Aktueller Preis"
+          },
+          "currency": {
+            "name": "Währung"
+          },
+          "threshold_price_per_kwh": {
+            "name": "Preisgrenze"
+          },
+          "threshold_comparison": {
+            "name": "Preis im Vergleich zur Grenze",
+            "state": {
+              "at_or_below": "An oder unter der Preisgrenze",
+              "above": "Über der Preisgrenze"
+            }
+          },
+          "mode": {
+            "name": "Planungsmodus",
+            "state": {
+              "threshold": "Preisgrenze",
+              "cheapest_contiguous": "Ein zusammenhängender Lauf",
+              "cheapest_split": "Auf mehrere günstigere Läufe aufteilen"
+            }
+          },
+          "window_start": {
+            "name": "Beginn des Zeitfensters"
+          },
+          "window_end": {
+            "name": "Ende des Zeitfensters"
+          },
+          "weekdays": {
+            "name": "Wochentage"
+          },
+          "required_duration_minutes": {
+            "name": "Gewünschte Laufzeit (Min.)"
+          },
+          "min_run_minutes": {
+            "name": "Kürzeste Laufzeit (Min.)"
+          },
+          "price_ceiling_per_kwh": {
+            "name": "Preisobergrenze"
+          },
+          "fallback": {
+            "name": "Vorrang bei Zielkonflikt",
+            "state": {
+              "price": "Preisgrenze beibehalten",
+              "deadline": "Ausreichende Laufzeit bevorzugen"
+            }
+          },
+          "deadline": {
+            "name": "Endtermin"
+          },
+          "provider": {
+            "name": "Preisquelle"
+          },
+          "next_change": {
+            "name": "Nächste Prüfung"
+          },
+          "calculated_at": {
+            "name": "Zuletzt berechnet"
+          },
+          "last_success": {
+            "name": "Letzte erfolgreiche Aktualisierung"
+          }
+        }
+      },
+      "next_price_start": {
+        "name": "Nächster Lauf beginnt"
+      },
+      "next_price_end": {
+        "name": "Nächster Lauf endet"
+      },
+      "decision_reason": {
+        "name": "Abschaltentscheidung",
+        "state": {
+          "source_unavailable": "Preisquelle nicht verfügbar",
+          "invalid_data": "Preisdaten konnten nicht verwendet werden",
+          "preheat": "Vorheizen eingeplant",
+          "shutdown": "Abschaltung eingeplant",
+          "recovery": "Wiederaufheizen eingeplant",
+          "waiting_for_prices": "Warten auf weitere Preise",
+          "next_cutoff_selected": "Nächste Abschaltung eingeplant",
+          "no_cutoff_selected": "Keine geeignete Abschaltung"
+        },
+        "state_attributes": {
+          "data_status": {
+            "name": "Preisstatus",
+            "state": {
+              "ready": "Bereit",
+              "waiting_for_prices": "Warten auf Preise",
+              "no_profitable_periods": "Keine geeigneten Zeiträume",
+              "source_unavailable": "Preisquelle nicht verfügbar",
+              "invalid_data": "Ungültige Preisdaten"
+            }
+          },
+          "next_change": {
+            "name": "Nächste Prüfung"
+          },
+          "locked": {
+            "name": "Zeitraum festgelegt"
+          },
+          "locked_settings_known": {
+            "name": "Einstellungen des festgelegten Zeitraums bekannt"
+          },
+          "effective_settings": {
+            "name": "Aktuell wirksame Einstellungen"
+          },
+          "locked_effective_settings": {
+            "name": "Einstellungen des festgelegten Zeitraums"
+          },
+          "warnings": {
+            "name": "Warncodes"
+          }
+        }
+      }
+    },
+    "binary_sensor": {
+      "cutoff_active": {
+        "name": "Abschaltung aktiv",
+        "state": {
+          "on": "Aktiv",
+          "off": "Inaktiv"
+        }
+      },
+      "price_active": {
+        "name": "Jetzt Strom nutzen"
+      }
+    }
+  },
+  "common": {
+    "profile_name_heating": "Heizungsoptimierung",
+    "profile_name_cheap_now": "Günstiger Strom",
+    "profile_name_water_heater": "Warmwasserspeicher",
+    "profile_name_appliance": "Geräteprogramm",
+    "profile_name_ev": "E-Auto laden"
+  }
+}

@@ -1,5 +1,7 @@
 # Part 3: Integration Examples - Making It Work for Your Home
 
+> This page describes the original Python Script (v2). For Electricity Price Scheduler, see the [integration guides](README.md).
+
 *Part 3 of 3: Configuration & Real-World Results*
 
 > **This document shows how to integrate the cutoff optimizer with YOUR specific loads.**  

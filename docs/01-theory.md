@@ -1,5 +1,7 @@
 # Part 1: Theory - Understanding Load Cutoff Optimization
 
+> This page describes the original Python Script (v2). For Electricity Price Scheduler, see the [integration guides](README.md).
+
 *Part 1 of 3: The Concept*
 
 > **This document is a mirror of the [Home Assistant Community post](https://community.home-assistant.io/t/optimizing-hvac-energy-savings-with-nordpool-15-min-pricing-part-1-3-theory-implementation-and-examples/936741).**
