@@ -22,7 +22,7 @@ Each schedule period includes `preheat_start`, `shutdown_start`, `recovery_start
 
 The implemented data-status values are `ready`, `waiting_for_prices`, `no_profitable_periods`, `source_unavailable`, and `invalid_data`. A valid price snapshot with no accepted period is distinguishable from missing or invalid prices. An unavailable or invalid source makes the schedule, phase, cutoff-active state, timestamps, and savings unavailable rather than leaving an old cutoff marked active.
 
-HA display time is local to the configured Home Assistant timezone. Automation templates should compare timestamps as datetimes or epoch values, not lexicographically compare localized strings. These attributes are not a stable released API yet; check the exact version before building automations around them.
+Home Assistant displays times in its configured timezone. In automation templates, compare timestamps as datetimes or epoch values. Use the entity reference for your installed version when writing templates that read these attributes.
 
 ## Understand a decision
 

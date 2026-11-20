@@ -1,18 +1,14 @@
 # Install and configure Electricity Price Scheduler
 
-## Availability
+## Requirements
 
-The integration is in local development. It has not been released on GitHub, submitted to the Home Assistant Marketplace, or validated as a production installation. Do not add a GitHub Marketplace repository or install this version into a production Home Assistant instance.
-
-The implementation targets Home Assistant 2026.11.0. The current local test setup uses the arm64 HA 2026.11.0 container described in [local testing](development/local-testing.md). This target is not yet a promise of a released minimum version.
+Use Home Assistant 2026.11.0 or later. Marketplace installation requires v3 or later in [GitHub Releases](https://github.com/nikopaulanne/electricity-price-scheduler/releases). Versions 1.x and 2.x are for the legacy Python Script. To try a development build, use an [isolated test instance](#local-development-instance).
 
 ## Before you start
 
 Set up one [supported electricity price source](configuration.md#profile-and-price-source) in your Home Assistant instance. Check that it has a current price for your area. If you already use the community Nord Pool integration, you can start with its existing price sensor. Choose English under **User profile → Localization → Language** to match the labels below.
 
 ## Marketplace installation
-
-Use Home Assistant 2026.11 or later and wait for the first v3 integration release in [GitHub Releases](https://github.com/nikopaulanne/electricity-price-scheduler/releases). Versions 1.x and 2.x are for the legacy Python Script.
 
 1. Select [Open Electricity Price Scheduler in Marketplace](https://my.home-assistant.io/redirect/marketplace_repository/?owner=nikopaulanne&repository=electricity-price-scheduler&category=integration). Confirm the address of your Home Assistant instance if asked.
 2. If Marketplace offers to add the repository, follow the prompts. Connect GitHub if prompted, then return to Home Assistant and open the repository page.
@@ -21,7 +17,7 @@ Use Home Assistant 2026.11 or later and wait for the first v3 integration releas
 
 If the link does not open your instance, go to **Settings → Marketplace → Add from link** and enter `https://github.com/nikopaulanne/electricity-price-scheduler`. If prompted for the type, select **Integration**. Select **Add**, then open the repository page and continue at step 3.
 
-See [Home Assistant’s Marketplace guide](https://www.home-assistant.io/integrations/marketplace/) for version selection, updates and uninstalling. The published release will state the exact Home Assistant requirement and tested sources.
+See [Home Assistant’s Marketplace guide](https://www.home-assistant.io/integrations/marketplace/) for version selection, updates and uninstalling.
 
 ## Create your first profile
 

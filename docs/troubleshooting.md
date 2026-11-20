@@ -1,6 +1,6 @@
 # Troubleshooting
 
-This page describes checks for the development implementation. It is not evidence that the integration is ready for production or that a live provider has been validated.
+Check the profile’s **Schedule status** and **Decision reason** to find out why a signal or schedule is unavailable.
 
 ## No periods found
 
